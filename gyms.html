@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gyms</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Inline styles (kept from your original) -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      line-height: 1.6;
+    }
+    h2, h3, h4 { color: #73000a; margin-top: 0; }
+    .gyms-section { padding: 3rem 1rem; max-width: 1200px; margin: auto; }
+    .gyms-section h2 { font-size: 2rem; text-align: center; margin-bottom: 1rem; }
+    .gyms-section > .text-center p { max-width: 700px; margin: 0 auto 2rem; color: #444; text-align: center; }
+    .grid-two { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 3rem; }
+    .grid-three { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 1rem; }
+    .img-wrapper { position: relative; height: 180px; margin-bottom: 1rem; }
+    .img-wrapper img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+    .badge { position: absolute; top: 10px; left: 10px; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; color: #fff; }
+    .badge.tuition { background: #73000a; }
+    .badge.membership { background: #ff9800; }
+    .card h4 { font-size: 1.2rem; margin: 0.5rem 0; color: #222; }
+    .card p { font-size: 0.9rem; margin: 0.4rem 0; text-align: left; }
+    .pro { color: green; font-weight: bold; }
+    .con { color: #e67e22; font-weight: bold; }
+    /* Off-Campus Gym Grid override to force 3 columns on wide screens */
+    .grid-three.fixed-cols { display:grid; grid-template-columns: repeat(3, 1fr); gap:30px; max-width:1200px; margin:auto; justify-items:center; }
+  </style>
+
+  <section id="gyms" class="gyms-section">
+    <div class="text-center">
+      <h2>Gym Resources – On Campus and Nearby</h2>
+      <p>
+        Finding the right workout environment makes it easier to stay consistent.
+        USC students can choose between on-campus gyms included with tuition or specialized gyms nearby.
+      </p>
+    </div>
+
+    <!-- On-Campus Facilities -->
+    <h3>On-Campus Facilities</h3>
+    <div class="grid-two">
+      <div class="card">
+        <div class="img-wrapper">
+          <img src="https://boudreauxgroup.com/projectpages/highered/stromthurmond/4.jpg" alt="Strom Thurmond Wellness and Fitness Center">
+          <span class="badge tuition">Included with Tuition</span>
+        </div>
+        <h4>Strom Thurmond Wellness and Fitness Center</h4>
+        <p><strong>Hours:</strong> Mon-Fri 6:00 AM – 11:00 PM; Sat-Sun 9:00 AM – 9:00 PM</p>
+        <p><strong>Highlights:</strong> Weight room, cardio machines, indoor track, swimming pool, rock-climbing wall, group classes, basketball courts</p>
+        <p><span class="pro">Why Choose Strom:</span> Modern, spacious, and filled with options for all fitness levels</p>
+        <p><span class="con">Considerations:</span> Often crowded in the evenings</p>
+      </div>
+
+      <div class="card">
+        <div class="img-wrapper">
+          <img src="https://pbs.twimg.com/media/Di80H1JWwAIsrp4.jpg:large" alt="Blatt Physical Education Center">
+          <span class="badge tuition">Included with Tuition</span>
+        </div>
+        <h4>Blatt Physical Education Center</h4>
+        <p><strong>Hours:</strong> Mon-Fri: 6–8:30 AM, 11:30 AM–1:30 PM, 4:30–7:00 PM; Sat-Sun 10:00 AM – 8:00 PM</p>
+        <p><strong>Highlights:</strong> Free weights, cardio machines, basketball & volleyball courts, indoor track</p>
+        <p><span class="pro">Why Choose Blatt:</span> Quieter and less crowded, great for quick workouts</p>
+        <p><span class="con">Considerations:</span> Smaller equipment selection compared to Strom</p>
+      </div>
+    </div>
+
+    <!-- Off-Campus Facilities -->
+    <h3>Off-Campus and Specialty Gyms</h3>
+    <div class="grid-three fixed-cols">
+      <div class="card">
+        <div class="img-wrapper">
+          <img src="https://images.unsplash.com/photo-1653927956711-f2222a45e040?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWlnaHQlMjBsaWZ0aW5nJTIwZXF1aXBtZW50JTIwZ3ltfGVufDF8fHx8MTc1NzUyNjA4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Brickhouse Functional Fitness">
+          <span class="badge membership">Membership Required</span>
+        </div>
+        <h4>Brickhouse Functional Fitness</h4>
+        <p><strong>Hours:</strong> Weekdays 5 AM – 10 PM; Sat 7 AM – 7 PM; Sun 10 AM – 7 PM</p>
+        <p><strong>Highlights:</strong> Group classes, Olympic lifting platforms, coaching</p>
+        <p><span class="pro">Pros:</span> Structured workouts, accountability, great atmosphere</p>
+        <p><span class="con">Cons:</span> Pricier membership</p>
+      </div>
+
+      <div class="card">
+        <div class="img-wrapper">
+          <img src="https://images.unsplash.com/photo-1653927956711-f2222a45e040?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWlnaHQlMjBsaWZ0aW5nJTIwZXF1aXBtZW50JTIwZ3ltfGVufDF8fHx8MTc1NzUyNjA4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Anytime Fitness Columbia">
+          <span class="badge membership">Membership Required</span>
+        </div>
+        <h4>Anytime Fitness – Columbia</h4>
+        <p><strong>Hours:</strong> Open 24/7</p>
+        <p><strong>Highlights:</strong> Strength machines, cardio, functional training space</p>
+        <p><span class="pro">Pros:</span> Flexible hours</p>
+        <p><span class="con">Cons:</span> Limited class offerings</p>
+      </div>
+
+      <div class="card">
+        <div class="img-wrapper">
+          <img src="https://images.unsplash.com/photo-1653927956711-f2222a45e040?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWlnaHQlMjBsaWZ0aW5nJTIwZXF1aXBtZW50JTIwZ3ltfGVufDF8fHx8MTc1NzUyNjA4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Crunch Fitness Columbia">
+          <span class="badge membership">Membership Required</span>
+        </div>
+        <h4>Crunch Fitness – Columbia</h4>
+        <p><strong>Hours:</strong> Typically 5 AM – 10 PM</p>
+        <p><strong>Highlights:</strong> Strength & cardio equipment, HIIT zones, Zumba</p>
+        <p><span class="pro">Pros:</span> Affordable, wide variety</p>
+        <p><span class="con">Cons:</span> Busy during peak hours</p>
+      </div>
+
+      <div class="card">
+        <div class="img-wrapper">
+          <img src="https://images.unsplash.com/photo-1653927956711-f2222a45e040?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWlnaHQlMjBsaWZ0aW5nJTIwZXF1aXBtZW50JTIwZ3ltfGVufDF8fHx8MTc1NzUyNjA4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Orangetheory Fitness">
+          <span class="badge membership">Membership Required</span>
+        </div>
+        <h4>Orangetheory Fitness – Gervais Street</h4>
+        <p><strong>Hours:</strong> Class times AM & PM</p>
+        <p><strong>Highlights:</strong> 60-minute classes, treadmill, rowing, weights</p>
+        <p><span class="pro">Pros:</span> Structured, coach-led with results tracking</p>
+        <p><span class="con">Cons:</span> Class-only format</p>
+      </div>
+
+      <div class="card">
+        <div class="img-wrapper">
+          <img src="https://images.unsplash.com/photo-1653927956711-f2222a45e040?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWlnaHQlMjBsaWZ0aW5nJTIwZXF1aXBtZW50JTIwZ3ltfGVufDF8fHx8MTc1NzUyNjA4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="YMCA Downtown Columbia">
+          <span class="badge membership">Membership Required</span>
+        </div>
+        <h4>YMCA – Downtown Columbia</h4>
+        <p><strong>Hours:</strong> Around 5 AM – 9 PM</p>
+        <p><strong>Highlights:</strong> Swimming pool, weights, group fitness, wellness programs</p>
+        <p><span class="pro">Pros:</span> Great community and wellness support</p>
+        <p><span class="con">Cons:</span> Membership required</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

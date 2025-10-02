@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forms</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="forms">
+    <h2 class="section-title">Feedback & Assessment Forms</h2>
+    <div class="two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="card">
+        <h3>Fitness Assessment</h3>
+        <form>
+          <label>Name *</label><input type="text">
+          <label>Email *</label><input type="email">
+          <label>Goals</label>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0;">
+            <label><input type="checkbox"> Build Muscle</label>
+            <label><input type="checkbox"> Lose Weight</label>
+            <label><input type="checkbox"> Endurance</label>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Feedback Form</h3>
+        <form>
+          <label>Name *</label><input type="text">
+          <label>Email *</label><input type="email">
+          <label>Comments</label><textarea rows="5"></textarea>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

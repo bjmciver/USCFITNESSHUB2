@@ -1,0 +1,151 @@
+<!-- nutrition.html -->
+<section id="nutrition" class="nutrition-section">
+  <h2>Nutrition and Food Options</h2>
+  <p class="subtitle">
+    Fitness isn’t just about working out — it’s about what you eat, too. 
+    Good nutrition fuels your workouts and helps you recover. 
+    USC provides dining options on campus, but smart choices make the difference.
+  </p>
+
+  <div class="nutrition-grid">
+    <!-- Left Column -->
+    <div class="card">
+      <h3>🍴 On-Campus Dining Tips</h3>
+      <p>Make the most of your meal plan with these smart choices</p>
+      <ul>
+        <li><strong>Russell House Dining Hall</strong><br>Build balanced meals with lean proteins, whole grains, and vegetables</li>
+        <li><strong>Healthy Grab-and-Go</strong><br>Choose wraps, yogurt, and fruit over chips and soda</li>
+        <li><strong>Grubhub Ordering</strong><br>Pre-order healthy meals to avoid last-minute unhealthy choices</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1644085127956-b10cbb22d5ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xsZWdlJTIwc3R1ZGVudCUyMGVhdGluZyUyMGhlYWx0aHklMjBtZWFsfGVufDF8fHx8MTc1NzUyNjA4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Student eating healthy meal" class="crop-img">
+    </div>
+
+    <!-- Grocery Shopping -->
+    <div class="card">
+      <h3>🛒 Grocery Shopping on a Budget</h3>
+      <p>Local stores like Aldi, Walmart, and Trader Joe’s offer affordable options. With $30/week, you can shop for:</p>
+      <div class="grocery-grid">
+        <div>
+          <h4>Proteins</h4>
+          <span class="badge inline">Chicken</span>
+          <span class="badge inline">Eggs</span>
+          <span class="badge inline">Tuna</span>
+          <span class="badge inline">Beans</span>
+        </div>
+        <div>
+          <h4>Carbs</h4>
+          <span class="badge inline">Rice</span>
+          <span class="badge inline">Oats</span>
+          <span class="badge inline">Whole wheat bread</span>
+          <span class="badge inline">Sweet potatoes</span>
+        </div>
+        <div>
+          <h4>Fruits & Veggies</h4>
+          <span class="badge inline">Bananas</span>
+          <span class="badge inline">Spinach</span>
+          <span class="badge inline">Apples</span>
+          <span class="badge inline">Frozen veggies</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Meal Plan -->
+    <div class="card">
+      <h3>💲 Sample Weekly Meal Plan</h3>
+      <p>Affordable, nutritious meals to fuel your fitness journey</p>
+      <ul class="meal-plan">
+        <li><strong>Breakfast</strong> — Oatmeal with banana and peanut butter</li>
+        <li><strong>Lunch</strong> — Brown rice, beans, and grilled chicken</li>
+        <li><strong>Snack</strong> — Greek yogurt with fruit</li>
+        <li><strong>Dinner</strong> — Whole wheat pasta with spinach and ground turkey</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Inline CSS for nutrition section (kept as in original) -->
+  <style>
+  .nutrition-section {
+    padding: 3rem 1rem;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  .nutrition-section h2 {
+    font-size: 2rem;
+    color: #73000a;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .nutrition-section .subtitle {
+    text-align: center;
+    color: #444;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+
+  .nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .card h3 {
+    margin-top: 0;
+    color: #222;
+  }
+
+  .crop-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .grocery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 1rem;
+  }
+
+  .grocery-grid h4 {
+    margin-bottom: 0.5rem;
+    color: #73000a;
+  }
+
+  .badge {
+    display: inline-block;
+    background: #f0f0f0;
+    color: #333;
+    padding: 4px 10px;
+    margin: 2px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+
+  .meal-plan {
+    list-style: none;
+    padding: 0;
+  }
+
+  .meal-plan li {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 6px 0;
+    font-size: 0.95rem;
+  }
+  </style>
+</section>
