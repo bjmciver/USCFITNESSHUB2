@@ -1,0 +1,201 @@
+/* ================================
+   USC Fitness Hub – External Styles
+   Paste into styles.css
+   ================================ */
+
+/* Base page styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+  color: #222;
+}
+
+/* Container for centering and responsive width */
+.container,
+#app.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Shared header and footer styling */
+header,
+footer {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Footer-specific styling */
+footer {
+  background: #000;
+  color: #fff;
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+/* Links (general) */
+a {
+  color: #73000a;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Buttons */
+button {
+  background: #000;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  margin-top: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #444;
+}
+
+/* Section titles / subtitles */
+.section-title {
+  text-align: center;
+  font-size: 1.8em;
+  margin: 40px 0 10px;
+  color: #73000a;
+}
+.section-subtitle {
+  text-align: center;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Page section backgrounds (IDs from your markup) */
+#calculator {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+#gyms {
+  background-color: #fdfdfd;
+  padding: 20px;
+}
+#forms {
+  background-color: #fff;
+  padding: 20px;
+  border-top: 2px solid #73000a;
+}
+
+/* ---------- Shared layout helpers ---------- */
+
+/* Simple responsive grids reused across sections */
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+.three-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+/* Forms (labels + inputs used across sections) */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Badges (used in nutrition and elsewhere) */
+.badge {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #333;
+  padding: 4px 10px;
+  margin: 2px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+/* Back-to-top button (footer) */
+.back-to-top {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #73000a;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.back-to-top:hover {
+  background-color: #990000;
+}
+
+/* ---------- Calculator helpers (shared) ---------- */
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.result-card { text-align: center; }
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.result-box {
+  background: #f3f3f3;
+  border-radius: 8px;
+  padding: 15px;
+}
+.result-box strong {
+  display: block;
+  font-size: 1.4rem;
+  color: #222;
+}
+.result-box span {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Optional helper for calculator image */
+.calc-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
