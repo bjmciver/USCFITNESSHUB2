@@ -116,105 +116,106 @@
     </section>
   </div>
 
-  <script>
-(function () {
-  // helper to safely read inputs (returns defaults if missing)
-  function readInputs() {
-    const weight = parseFloat(document.getElementById('weight')?.value) || 160;
-    const height = parseFloat(document.getElementById('height')?.value) || 5.10;
-    const age = parseFloat(document.getElementById('age')?.value) || 20;
-    const gender = (document.getElementById('gender')?.value) || 'Male';
-    const activity = parseFloat(document.getElementById('activity')?.value) || 1.55;
-    return { weight, height, age, gender, activity };
-  }
-
-  function calculateAndUpdate() {
-    const { weight, height, age, gender, activity } = readInputs();
-
-    let bmr;
-    if (String(gender).toLowerCase().startsWith('m')) {
-      bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-    } else {
-      bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-    }
-
-    const calories = Math.round(bmr * activity);
-    const protein = Math.round(weight * 1.1);
-    const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
-
-    const userCaloriesEl = document.getElementById('user-calories');
-    const userProteinEl = document.getElementById('user-protein');
-    const userSummaryEl = document.getElementById('user-summary');
-
-    if (userCaloriesEl) userCaloriesEl.textContent = "~" + calories;
-    if (userProteinEl) userProteinEl.textContent = "~" + protein + "g";
-    if (userSummaryEl) userSummaryEl.textContent = summary;
-  }
-
-  function doReset() {
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('calc-form');
-    if (form) form.reset();
-
-    const userCaloriesEl = document.getElementById('user-calories');
-    const userProteinEl = document.getElementById('user-protein');
-    const userSummaryEl = document.getElementById('user-summary');
-
-    if (userCaloriesEl) userCaloriesEl.textContent = "0";
-    if (userProteinEl) userProteinEl.textContent = "0g";
-    if (userSummaryEl) userSummaryEl.textContent = "Fill out the form and click calculate to see your results.";
-  }
-
-  // Primary: click handler on the Calculate button (works even if the form isn't present when script ran)
-  document.addEventListener('click', function (ev) {
-    const btn = ev.target.closest && ev.target.closest('#calculate-btn');
-    if (btn) {
-      ev.preventDefault();
-      calculateAndUpdate();
-    }
-    const reset = ev.target.closest && ev.target.closest('#reset-btn');
-    if (reset) {
-      ev.preventDefault();
-      doReset();
-    }
-  });
-
-  // Secondary: delegated submit handler (catches native submits if anything triggers them)
-  document.addEventListener('submit', function (ev) {
-    const f = ev.target;
-    if (f && f.id === 'calc-form') {
-      ev.preventDefault();
-      calculateAndUpdate();
-    }
-  });
-
-  // Defensive: if form and buttons already exist and you want direct handlers, attach them
-  // (this is optional; the above delegated handlers are usually enough).
-  function attachDirectHandlersIfReady() {
-    const calcBtn = document.getElementById('calculate-btn');
+    const calcBtn = document.getElementById('calculate-btn') || document.querySelector('#calculator button[type="submit"]');
     const resetBtn = document.getElementById('reset-btn');
-    const form = document.getElementById('calc-form');
+    const userCaloriesEl = document.getElementById('user-calories');
+    const userProteinEl = document.getElementById('user-protein');
+    const userSummaryEl = document.getElementById('user-summary');
 
-    if (calcBtn && !calcBtn._bound) {
-      calcBtn.addEventListener('click', function (e) { e.preventDefault(); calculateAndUpdate(); });
-      calcBtn._bound = true;
+    function readInputs() {
+      return {
+        weight: parseFloat(document.getElementById('weight')?.value) || 160,
+        height: parseFloat(document.getElementById('height')?.value) || 5.10,
+        age: parseFloat(document.getElementById('age')?.value) || 20,
+        gender: (document.getElementById('gender')?.value) || 'Male',
+        activity: parseFloat(document.getElementById('activity')?.value) || 1.55,
+        goal: (document.querySelector('input[name="goal"]:checked')?.value) || 'maintain'
+      };
     }
-    if (resetBtn && !resetBtn._bound) {
-      resetBtn.addEventListener('click', function (e) { e.preventDefault(); doReset(); });
-      resetBtn._bound = true;
-    }
-    if (form && !form._bound) {
-      form.addEventListener('submit', function (e) { e.preventDefault(); calculateAndUpdate(); });
-      form._bound = true;
-    }
-  }
 
-  // Try to attach direct handlers now and again shortly after in case fragment loads late
-  attachDirectHandlersIfReady();
-  setTimeout(attachDirectHandlersIfReady, 300);
-})();
+    function applyGoalAdjustments(calories, weight, goal) {
+      // Goal multipliers (adjust calories)
+      const goalMultiplier = {
+        lose: 0.85,     // ~15% deficit
+        maintain: 1.00, // maintenance
+        gain: 1.15      // ~15% surplus
+      }[goal] ?? 1.00;
+
+      // Protein multiplier (per lb)
+      const proteinPerLb = {
+        lose: 1.2,
+        maintain: 1.1,
+        gain: 1.4
+      }[goal] ?? 1.1;
+
+      const adjustedCalories = Math.round(calories * goalMultiplier);
+      const proteinGrams = Math.round(weight * proteinPerLb);
+
+      return { adjustedCalories, proteinGrams, goalMultiplier, proteinPerLb };
+    }
+
+    function updateResultsDisplay(calories, protein, summary) {
+      if (userCaloriesEl) userCaloriesEl.textContent = "~" + calories;
+      if (userProteinEl) userProteinEl.textContent = "~" + protein + "g";
+      if (userSummaryEl) userSummaryEl.textContent = summary;
+    }
+
+    function calculateAndUpdate() {
+      const { weight, height, age, gender, activity, goal } = readInputs();
+
+      // BMR (same formula you used)
+      let bmr;
+      if (String(gender).toLowerCase().startsWith('m')) {
+        bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+      } else {
+        bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+      }
+
+      const maintenanceCalories = bmr * activity;
+
+      const { adjustedCalories, proteinGrams } = applyGoalAdjustments(maintenanceCalories, weight, goal);
+
+      const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}, goal: ${goal}`;
+
+      updateResultsDisplay(adjustedCalories, proteinGrams, summary);
+    }
+
+    function doReset() {
+      const formEl = document.getElementById('calc-form');
+      if (formEl) formEl.reset();
+      updateResultsDisplay(0, 0, "Fill out the form and click calculate to see your results.");
+    }
+
+    // Prefer direct button hooks if available (works inside SPA fragments)
+    if (calcBtn) {
+      calcBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        calculateAndUpdate();
+      });
+    }
+
+    // Also handle form submit just in case
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        calculateAndUpdate();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        doReset();
+      });
+    }
+  });
 </script>
 </body>
 </html>
+
 
 
 
