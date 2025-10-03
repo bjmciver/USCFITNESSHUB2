@@ -144,55 +144,79 @@
       </div> <!-- .calc-grid -->
     </div> <!-- .container -->
 
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('calc-form');
-        const resetBtn = document.getElementById('reset-btn');
-        const userCalories = document.getElementById('user-calories');
-        const userProtein = document.getElementById('user-protein');
-        const userSummary = document.getElementById('user-summary');
+   <script>
+(function () {
+  // init function tries to attach handlers; returns true if successful
+  function initCalculator() {
+    const form = document.getElementById('calc-form');
+    if (!form) return false; // not present yet
 
-        function updateResults(calories, protein, summary) {
-          if (userCalories) userCalories.textContent = "~" + calories;
-          if (userProtein) userProtein.textContent = "~" + protein + "g";
-          if (userSummary) userSummary.textContent = summary;
-        }
+    // guard: only initialize once
+    if (form.dataset.calcInit === '1') return true;
+    form.dataset.calcInit = '1';
 
-        if (form) {
-          form.addEventListener('submit', (e) => {
-            e.preventDefault(); // stop the native submission and scroll-to-top
+    const resetBtn = document.getElementById('reset-btn');
+    const userCalories = document.getElementById('user-calories');
+    const userProtein = document.getElementById('user-protein');
+    const userSummary = document.getElementById('user-summary');
 
-            const weight = parseFloat(document.getElementById('weight').value) || 160;
-            const height = parseFloat(document.getElementById('height').value) || 5.10;
-            const age = parseFloat(document.getElementById('age').value) || 20;
-            const gender = document.getElementById('gender').value || 'Male';
-            const activity = parseFloat(document.getElementById('activity').value) || 1.55;
+    function updateResults(calories, protein, summary) {
+      if (userCalories) userCalories.textContent = "~" + calories;
+      if (userProtein)  userProtein.textContent  = "~" + protein + "g";
+      if (userSummary)  userSummary.textContent  = summary;
+    }
 
-            let bmr;
-            if (gender === 'Male') {
-              bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-            } else {
-              bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-            }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); // STOP native submit + scroll-to-top
 
-            const calories = Math.round(bmr * activity);
-            const protein = Math.round(weight * 1.1);
-            const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+      const weight = parseFloat(document.getElementById('weight').value) || 160;
+      const height = parseFloat(document.getElementById('height').value) || 5.10;
+      const age    = parseFloat(document.getElementById('age').value)    || 20;
+      const gender = (document.getElementById('gender') && document.getElementById('gender').value) || 'Male';
+      const activity = parseFloat(document.getElementById('activity').value) || 1.55;
 
-            updateResults(calories, protein, summary);
-          });
-        }
+      let bmr;
+      if (gender === 'Male') {
+        bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+      } else {
+        bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+      }
 
-        if (resetBtn) {
-          resetBtn.addEventListener('click', () => {
-            updateResults(0, 0, 'Fill out the form and click calculate to see your results.');
-          });
-        }
+      const calories = Math.round(bmr * activity);
+      const protein = Math.round(weight * 1.1);
+      const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+
+      updateResults(calories, protein, summary);
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        updateResults(0, 0, 'Fill out the form and click calculate to see your results.');
       });
-    </script>
+    }
+
+    return true;
+  }
+
+  // Try to initialize immediately
+  if (!initCalculator()) {
+    // If not present yet, observe the DOM and initialize when injection happens
+    const mo = new MutationObserver((mutations, obs) => {
+      if (initCalculator()) {
+        obs.disconnect();
+      }
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    // safety: stop observing after 5s
+    setTimeout(() => mo.disconnect(), 5000);
+  }
+})();
+</script>
   </section>
 </body>
 </html>
+
 
 
 
