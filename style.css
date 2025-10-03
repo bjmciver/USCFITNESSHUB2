@@ -431,4 +431,94 @@ h2, h3, h4 { color:#73000a; margin-top:0; }
   background-color: #900;
 }
 
+/* Use the same container width as site content */
+#footer {
+  background: #f9f9f9;           /* light footer background you liked */
+  border-top: 2px solid #73000a;/* garnet accent line */
+  color: #000;                  /* default text black */
+  padding: 30px 16px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Inner wrapper matches .container width */
+#footer > footer > div,
+#footer .footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 0;
+}
+
+/* Brand / title line */
+#footer p:first-of-type {
+  margin: 6px 0 12px;
+  font-weight: 700;
+  color: #000;
+  font-size: 1rem;
+}
+
+/* Internal navigation (Home, Gyms, etc.) */
+#footer nav {
+  margin: 10px 0;
+}
+#footer nav a {
+  color: #73000a;               /* garnet internal links */
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: 600;
+}
+#footer nav a:hover {
+  text-decoration: underline;
+  color: #5f0007;               /* slightly darker on hover */
+}
+
+/* Secondary / external links (muted) */
+#footer .footer-links,
+#footer > footer > div > div {
+  margin: 10px 0;
+}
+#footer .footer-links a,
+#footer > footer > div > div a {
+  color: #555;                  /* muted gray for external resources */
+  margin: 0 10px;
+  text-decoration: none;
+}
+#footer .footer-links a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Meta line (copyright) */
+#footer p.footer-meta,
+#footer p:last-of-type {
+  margin-top: 12px;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+/* Back-to-top button */
+#footer .back-to-top {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 8px 16px;
+  background-color: #73000a;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  transition: transform .12s ease, background-color .12s ease;
+}
+#footer .back-to-top:hover {
+  background-color: #8f000f;
+  transform: translateY(-2px);
+}
+
+/* Small screens adjustments */
+@media (max-width: 640px) {
+  #footer nav a, #footer .footer-links a { margin: 6px; display:inline-block; }
+  #footer { padding: 22px 12px; }
+}
+
+
 
