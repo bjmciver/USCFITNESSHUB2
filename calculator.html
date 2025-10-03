@@ -38,248 +38,201 @@
 </head>
 <body>
   <div class="container">
-    <section id="calculator" class="calculator-section">
-      <h2>Fitness Calculator</h2>
-      <p class="subtitle">Enter your info below to get tailored calorie and protein goals.</p>
+    <section id="calculator" class="calculator-section" aria-label="Fitness calculator">
+  <div class="container">
+    <h2>Fitness Calculator</h2>
+    <p class="section-subtitle">Enter your info below to get tailored calorie and protein goals.</p>
 
-      <div class="calc-grid">
-        <!-- LEFT: form -->
-        <div class="card">
-          <h3 style="margin-top:0;">Personal Information</h3>
+    <div class="calc-grid">
+      <!-- FORM -->
+      <div class="card form-card">
+        <h3 style="margin-top:0; margin-bottom:8px;">Personal Information</h3>
 
-          <!-- NOTE: the form has unique IDs and buttons use explicit IDs for JS -->
-          <form id="calc-form" novalidate>
+        <form id="calc-form" novalidate>
+          <div class="field">
             <label for="height">Height (ft — decimal)</label>
-            <input id="height" name="height" type="number" step="0.01" placeholder="5.10" value="5.10">
+            <input id="height" name="height" type="number" step="0.01" placeholder="5.10" value="5.10" />
+          </div>
 
+          <div class="field">
             <label for="weight">Weight (lbs)</label>
-            <input id="weight" name="weight" type="number" placeholder="160" value="160">
+            <input id="weight" name="weight" type="number" placeholder="160" value="160" />
+          </div>
 
+          <div class="field">
             <label for="age">Age</label>
-            <input id="age" name="age" type="number" placeholder="20" value="20">
+            <input id="age" name="age" type="number" placeholder="20" value="20" />
+          </div>
 
+          <div class="field">
             <label for="gender">Gender</label>
-            <select id="gender" name="gender">
+            <select id="gender" name="gender" aria-label="Gender">
               <option>Male</option>
               <option>Female</option>
             </select>
+          </div>
 
+          <div class="field">
             <label for="activity">Activity Level</label>
-            <select id="activity" name="activity">
+            <select id="activity" name="activity" aria-label="Activity level">
               <option value="1.2">Sedentary</option>
               <option value="1.375">Lightly Active</option>
-              <option value="1.55">Moderately Active</option>
+              <option value="1.55" selected>Moderately Active</option>
               <option value="1.725">Very Active</option>
             </select>
+          </div>
 
+          <div class="field">
             <label>Goal</label>
             <div class="goal-options" role="radiogroup" aria-label="Goal">
               <label><input type="radio" name="goal" value="lose"> Lose Weight</label>
               <label><input type="radio" name="goal" value="maintain" checked> Maintain</label>
               <label><input type="radio" name="goal" value="gain"> Gain</label>
             </div>
+          </div>
 
-            <div class="form-actions">
-  <button type="button" id="calculate-btn" class="btn btn-primary">Calculate</button>
-  <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
-</div>
-          </form>
+          <div class="form-actions" style="margin-top:12px;">
+            <button type="submit" id="calc-btn" class="btn btn-primary">Calculate</button>
+            <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT: image + example + user result -->
+      <div>
+        <div class="card">
+          <img class="calc-img" src="https://images.unsplash.com/photo-1685660477895-f1b6a417466b?auto=format&fit=crop&w=1080&q=60" alt="Health device" />
         </div>
 
-        <!-- RIGHT: image + example + user result -->
-        <div>
-          <div class="card">
-            <img class="calc-img" src="https://images.unsplash.com/photo-1685660477895-f1b6a417466b?auto=format&fit=crop&w=1080&q=60" alt="Health device">
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin-top:0; margin-bottom:8px; text-align:center;">Example Result</h3>
+          <p style="text-align:center; color:#555; margin:0 0 12px;">
+            A 20-year-old student, 5’10”, 160 lbs, moderately active, trying to gain weight and muscle
+          </p>
+          <div class="result-grid">
+            <div class="result-box"><strong>~2,700</strong><span>Calories to maintain</span></div>
+            <div class="result-box"><strong>~170g</strong><span>Protein goal</span></div>
           </div>
+        </div>
 
-          <div class="card" style="margin-top:12px;">
-            <h3 style="margin-top:0; text-align:center;">Example Result</h3>
-            <p style="text-align:center; color:#555; margin:0 0 12px;">A 20-year-old student, 5’10”, 160 lbs, moderately active, trying to gain weight and muscle</p>
-            <div class="result-grid">
-              <div class="result-box"><strong>~2,700</strong><span>Calories to maintain</span></div>
-              <div class="result-box"><strong>~170g</strong><span>Protein goal</span></div>
-            </div>
-          </div>
-
-          <div id="user-result" class="card" style="margin-top:12px;">
-            <h3 style="margin-top:0; text-align:center;">Your Result</h3>
-            <p id="user-summary" style="text-align:center; color:#555; margin:0 0 12px;">Fill out the form and click calculate to see your results.</p>
-            <div class="result-grid">
-              <div class="result-box"><strong id="user-calories">0</strong><span>Calories to maintain</span></div>
-              <div class="result-box"><strong id="user-protein">0g</strong><span>Protein goal</span></div>
-            </div>
+        <div id="user-result" class="card" style="margin-top:12px;">
+          <h3 style="margin-top:0; margin-bottom:8px; text-align:center;">Your Result</h3>
+          <p id="user-summary" style="text-align:center; color:#555; margin:0 0 12px;">Fill out the form and click calculate to see your results.</p>
+          <div class="result-grid">
+            <div class="result-box"><strong id="user-calories">0</strong><span>Calories to maintain</span></div>
+            <div class="result-box"><strong id="user-protein">0g</strong><span>Protein goal</span></div>
           </div>
         </div>
       </div>
+    </div> <!-- .calc-grid -->
+  </div> <!-- .container -->
 
-      <p class="note">If this works, replace only your calculator fragment with matching IDs and handlers — do not duplicate IDs elsewhere.</p>
-    </section>
-  </div>
+  <!-- Minimal local styles (won’t override your global styles) -->
+  <style>
+    .calculator-section .calc-grid { display:grid; grid-template-columns: 1fr 360px; gap:20px; max-width:920px; margin:0 auto; padding:0 8px; align-items:start; box-sizing:border-box; }
+    @media (max-width:980px) { .calculator-section .calc-grid { grid-template-columns:1fr; } }
+    .form-card .field { margin-bottom:6px; }
+    .goal-options { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+    .form-actions .btn { padding:8px 14px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
+    .btn-primary { background:#73000a; color:#fff; }
+    .btn-secondary { background:#fff; border:1px solid #ddd; color:#111; }
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .result-box { background:#f3f3f3; border-radius:8px; padding:14px; text-align:center; }
+  </style>
 
- <script>
-(function () {
-  function toNum(v, fallback = 0) {
-    if (v == null) return fallback;
-    const n = parseFloat(String(v).replace(/,/g,'').trim());
-    return Number.isFinite(n) ? n : fallback;
-  }
+  <!-- Script: simple, robust, and safe to run multiple times -->
+  <script>
+    (function () {
+      // Avoid double-binding
+      if (window.__usc_calc_bound) return;
+      window.__usc_calc_bound = true;
 
-  // Robust goal reader — returns normalized key: 'lose'|'maintain'|'gain'
-  function readGoal() {
-    // 1) checked radio with value
-    const checkedValue = (document.querySelector('input[name="goal"]:checked') || {}).value;
-    if (checkedValue) {
-      const normalized = normalizeGoal(checkedValue);
-      if (normalized) return { raw: checkedValue, key: normalized, method: 'value-checked' };
-    }
-
-    // 2) any checked radio (maybe no name, but checked)
-    const anyChecked = Array.from(document.querySelectorAll('input[type="radio"]')).find(r => r.checked);
-    if (anyChecked) {
-      // try its value
-      if (anyChecked.value) {
-        const normalized = normalizeGoal(anyChecked.value);
-        if (normalized) return { raw: anyChecked.value, key: normalized, method: 'any-checked-value' };
+      function toNum(v, fallback=0) {
+        const n = parseFloat(String(v || '').trim());
+        return Number.isFinite(n) ? n : fallback;
       }
-      // try label text (parent text)
-      const parentText = (anyChecked.closest('label') || anyChecked.parentElement || {}).textContent || '';
-      const normalizedLabel = normalizeGoal(parentText);
-      if (normalizedLabel) return { raw: parentText.trim(), key: normalizedLabel, method: 'any-checked-label' };
-    }
 
-    // 3) try select named goal
-    const sel = document.querySelector('select[name="goal"], select#goal');
-    if (sel && sel.value) {
-      const normalized = normalizeGoal(sel.value);
-      if (normalized) return { raw: sel.value, key: normalized, method: 'select-value' };
-    }
-
-    // 4) try radios by scanning for radio groups inside #calculator and reading label text for the checked index
-    const radios = Array.from(document.querySelectorAll('#calculator input[type="radio"], input[type="radio"]'));
-    for (const r of radios) {
-      if (r.checked) {
-        const txt = (r.closest('label') || r.parentElement || {}).textContent || r.value || '';
-        const normalized = normalizeGoal(txt);
-        if (normalized) return { raw: txt.trim(), key: normalized, method: 'scanned-label' };
+      function getGoalKey() {
+        const checked = document.querySelector('input[name="goal"]:checked');
+        if (checked && checked.value) return checked.value.toLowerCase();
+        return 'maintain';
       }
-    }
 
-    // 5) fallback: read any radio's value/label if none checked (choose maintain)
-    const first = radios[0];
-    const fallbackRaw = first ? (first.value || ((first.closest('label')||{}).textContent || '')) : 'maintain';
-    return { raw: fallbackRaw.trim(), key: 'maintain', method: 'fallback' };
-  }
+      function updateDisplay(cal, protein, summary) {
+        const c = document.getElementById('user-calories');
+        const p = document.getElementById('user-protein');
+        const s = document.getElementById('user-summary');
+        if (c) c.textContent = "~" + Math.round(cal);
+        if (p) p.textContent = "~" + Math.round(protein) + "g";
+        if (s) s.textContent = summary;
+      }
 
-  function normalizeGoal(str) {
-    if (!str) return null;
-    const s = String(str).toLowerCase();
-    if (s.includes('lose')) return 'lose';
-    if (s.includes('gain')) return 'gain';
-    if (s.includes('maintain') || s.includes('maintain')) return 'maintain';
-    // allow short forms
-    if (s === 'l' || s === 'loss') return 'lose';
-    if (s === 'g') return 'gain';
-    if (s === 'm') return 'maintain';
-    return null;
-  }
+      function computeAndShow() {
+        const weight = toNum(document.getElementById('weight')?.value, 160);
+        const height = toNum(document.getElementById('height')?.value, 5.10);
+        const age = toNum(document.getElementById('age')?.value, 20);
+        const gender = (document.getElementById('gender')?.value || 'Male').toLowerCase();
+        const activity = toNum(document.getElementById('activity')?.value, 1.55);
+        const goal = getGoalKey(); // 'lose'|'maintain'|'gain'
 
-  function readInputs() {
-    const weight = toNum(document.getElementById('weight')?.value, 160);
-    const height = toNum(document.getElementById('height')?.value, 5.10);
-    const age = toNum(document.getElementById('age')?.value, 20);
-    const gender = (document.getElementById('gender')?.value || 'Male');
-    const activity = toNum(document.getElementById('activity')?.value, 1.55);
-    const goalInfo = readGoal();
-    return { weight, height, age, gender, activity, goalInfo };
-  }
+        // BMR (approx Mifflin/Harris style you used)
+        let bmr;
+        if (gender.startsWith('m')) {
+          bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+        } else {
+          bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+        }
 
-  function applyGoalAdjustments(calories, weight, goalKey) {
-    const multipliers = { lose: 0.85, maintain: 1.00, gain: 1.15 };
-    const proteinPerLb = { lose: 1.2, maintain: 1.1, gain: 1.4 };
-    const mult = multipliers[goalKey] ?? 1;
-    const protein = Math.round(weight * (proteinPerLb[goalKey] ?? 1.1));
-    const adjusted = Math.round(calories * mult);
-    return { adjustedCalories: adjusted, proteinGrams: protein, multiplier: mult };
-  }
+        const maintenance = bmr * activity;
 
-  function updateDisplay(calories, protein, summary) {
-    const c = document.getElementById('user-calories');
-    const p = document.getElementById('user-protein');
-    const s = document.getElementById('user-summary');
-    if (c) c.textContent = "~" + calories;
-    if (p) p.textContent = "~" + protein + "g";
-    if (s) s.textContent = summary;
-  }
+        const goalMultipliers = { lose: 0.85, maintain: 1.00, gain: 1.15 };
+        const proteinPerLb = { lose: 1.2, maintain: 1.1, gain: 1.4 };
 
-  function calculateAndUpdate() {
-    const { weight, height, age, gender, activity, goalInfo } = readInputs();
-    console.log('[calc] inputs:', { weight, height, age, gender, activity, goalInfo });
+        const mult = goalMultipliers[goal] ?? 1;
+        const protein = weight * (proteinPerLb[goal] ?? 1.1);
+        const calories = maintenance * mult;
 
-    // compute BMR similar to your previous formula
-    let bmr;
-    if (String(gender).toLowerCase().startsWith('m')) {
-      bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-    } else {
-      bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-    }
-    const maintenance = bmr * activity;
+        const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goal}`;
+        updateDisplay(calories, protein, summary);
+      }
 
-    const goalKey = (goalInfo && goalInfo.key) || 'maintain';
-    const { adjustedCalories, proteinGrams, multiplier } = applyGoalAdjustments(maintenance, weight, goalKey);
+      // attach handlers (form submit + separate button handlers)
+      const form = document.getElementById('calc-form');
+      const calcBtn = document.getElementById('calc-btn');
+      const resetBtn = document.getElementById('reset-btn');
 
-    const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goalKey} (mult ${multiplier})`;
-    console.log('[calc] maintenance:', Math.round(maintenance), 'adjusted:', adjustedCalories, 'protein:', proteinGrams);
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          computeAndShow();
+        });
+      }
 
-    updateDisplay(adjustedCalories, proteinGrams, summary);
-  }
+      if (calcBtn) {
+        calcBtn.addEventListener('click', function (e) {
+          // in case the form isn't catching submit for any reason
+          e.preventDefault();
+          computeAndShow();
+        });
+      }
 
-  function doReset() {
-    const form = document.getElementById('calc-form');
-    if (form) form.reset();
-    updateDisplay(0, 0, 'Fill out the form and click calculate to see your results.');
-  }
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          // clear form & results
+          if (form) form.reset();
+          updateDisplay(0, 0, 'Fill out the form and click calculate to see your results.');
+        });
+      }
 
-  // Attach handlers robustly:
-  function attachHandlers() {
-    const form = document.getElementById('calc-form');
-    if (form && !form._bound) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        calculateAndUpdate();
-      });
-      form._bound = true;
-    }
-
-    const calcBtn = document.querySelector('#calculator .form-actions button[type="submit"], #calculate-btn, .btn-primary');
-    if (calcBtn && !calcBtn._bound) {
-      calcBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        calculateAndUpdate();
-      });
-      calcBtn._bound = true;
-    }
-
-    const resetBtn = document.getElementById('reset-btn') || document.querySelector('#calculator .form-actions button[type="reset"]');
-    if (resetBtn && !resetBtn._bound) {
-      resetBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        doReset();
-      });
-      resetBtn._bound = true;
-    }
-  }
-
-  attachHandlers();
-  // in case fragment loads asynchronously, try again shortly
-  setTimeout(attachHandlers, 120);
-  setTimeout(attachHandlers, 600);
-
-  // Expose for quick debugging:
-  window.__usc_calc = { readGoal, readInputs, calculateAndUpdate, doReset };
-})();
-</script>
+      // Helpful: compute once to show defaults
+      computeAndShow();
+    })();
+  </script>
+</section>
 </body>
 </html>
+
 
 
 
