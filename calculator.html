@@ -117,104 +117,170 @@
   </div>
 
  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('calc-form');
-    const calcBtn = document.getElementById('calculate-btn') || document.querySelector('#calculator button[type="submit"]');
-    const resetBtn = document.getElementById('reset-btn');
-    const userCaloriesEl = document.getElementById('user-calories');
-    const userProteinEl = document.getElementById('user-protein');
-    const userSummaryEl = document.getElementById('user-summary');
+(function () {
+  function toNum(v, fallback = 0) {
+    if (v == null) return fallback;
+    const n = parseFloat(String(v).replace(/,/g,'').trim());
+    return Number.isFinite(n) ? n : fallback;
+  }
 
-    function readInputs() {
-      return {
-        weight: parseFloat(document.getElementById('weight')?.value) || 160,
-        height: parseFloat(document.getElementById('height')?.value) || 5.10,
-        age: parseFloat(document.getElementById('age')?.value) || 20,
-        gender: (document.getElementById('gender')?.value) || 'Male',
-        activity: parseFloat(document.getElementById('activity')?.value) || 1.55,
-        goal: (document.querySelector('input[name="goal"]:checked')?.value) || 'maintain'
-      };
+  // Robust goal reader — returns normalized key: 'lose'|'maintain'|'gain'
+  function readGoal() {
+    // 1) checked radio with value
+    const checkedValue = (document.querySelector('input[name="goal"]:checked') || {}).value;
+    if (checkedValue) {
+      const normalized = normalizeGoal(checkedValue);
+      if (normalized) return { raw: checkedValue, key: normalized, method: 'value-checked' };
     }
 
-    function applyGoalAdjustments(calories, weight, goal) {
-      // Goal multipliers (adjust calories)
-      const goalMultiplier = {
-        lose: 0.85,     // ~15% deficit
-        maintain: 1.00, // maintenance
-        gain: 1.15      // ~15% surplus
-      }[goal] ?? 1.00;
-
-      // Protein multiplier (per lb)
-      const proteinPerLb = {
-        lose: 1.2,
-        maintain: 1.1,
-        gain: 1.4
-      }[goal] ?? 1.1;
-
-      const adjustedCalories = Math.round(calories * goalMultiplier);
-      const proteinGrams = Math.round(weight * proteinPerLb);
-
-      return { adjustedCalories, proteinGrams, goalMultiplier, proteinPerLb };
-    }
-
-    function updateResultsDisplay(calories, protein, summary) {
-      if (userCaloriesEl) userCaloriesEl.textContent = "~" + calories;
-      if (userProteinEl) userProteinEl.textContent = "~" + protein + "g";
-      if (userSummaryEl) userSummaryEl.textContent = summary;
-    }
-
-    function calculateAndUpdate() {
-      const { weight, height, age, gender, activity, goal } = readInputs();
-
-      // BMR (same formula you used)
-      let bmr;
-      if (String(gender).toLowerCase().startsWith('m')) {
-        bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-      } else {
-        bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+    // 2) any checked radio (maybe no name, but checked)
+    const anyChecked = Array.from(document.querySelectorAll('input[type="radio"]')).find(r => r.checked);
+    if (anyChecked) {
+      // try its value
+      if (anyChecked.value) {
+        const normalized = normalizeGoal(anyChecked.value);
+        if (normalized) return { raw: anyChecked.value, key: normalized, method: 'any-checked-value' };
       }
-
-      const maintenanceCalories = bmr * activity;
-
-      const { adjustedCalories, proteinGrams } = applyGoalAdjustments(maintenanceCalories, weight, goal);
-
-      const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}, goal: ${goal}`;
-
-      updateResultsDisplay(adjustedCalories, proteinGrams, summary);
+      // try label text (parent text)
+      const parentText = (anyChecked.closest('label') || anyChecked.parentElement || {}).textContent || '';
+      const normalizedLabel = normalizeGoal(parentText);
+      if (normalizedLabel) return { raw: parentText.trim(), key: normalizedLabel, method: 'any-checked-label' };
     }
 
-    function doReset() {
-      const formEl = document.getElementById('calc-form');
-      if (formEl) formEl.reset();
-      updateResultsDisplay(0, 0, "Fill out the form and click calculate to see your results.");
+    // 3) try select named goal
+    const sel = document.querySelector('select[name="goal"], select#goal');
+    if (sel && sel.value) {
+      const normalized = normalizeGoal(sel.value);
+      if (normalized) return { raw: sel.value, key: normalized, method: 'select-value' };
     }
 
-    // Prefer direct button hooks if available (works inside SPA fragments)
-    if (calcBtn) {
-      calcBtn.addEventListener('click', (e) => {
+    // 4) try radios by scanning for radio groups inside #calculator and reading label text for the checked index
+    const radios = Array.from(document.querySelectorAll('#calculator input[type="radio"], input[type="radio"]'));
+    for (const r of radios) {
+      if (r.checked) {
+        const txt = (r.closest('label') || r.parentElement || {}).textContent || r.value || '';
+        const normalized = normalizeGoal(txt);
+        if (normalized) return { raw: txt.trim(), key: normalized, method: 'scanned-label' };
+      }
+    }
+
+    // 5) fallback: read any radio's value/label if none checked (choose maintain)
+    const first = radios[0];
+    const fallbackRaw = first ? (first.value || ((first.closest('label')||{}).textContent || '')) : 'maintain';
+    return { raw: fallbackRaw.trim(), key: 'maintain', method: 'fallback' };
+  }
+
+  function normalizeGoal(str) {
+    if (!str) return null;
+    const s = String(str).toLowerCase();
+    if (s.includes('lose')) return 'lose';
+    if (s.includes('gain')) return 'gain';
+    if (s.includes('maintain') || s.includes('maintain')) return 'maintain';
+    // allow short forms
+    if (s === 'l' || s === 'loss') return 'lose';
+    if (s === 'g') return 'gain';
+    if (s === 'm') return 'maintain';
+    return null;
+  }
+
+  function readInputs() {
+    const weight = toNum(document.getElementById('weight')?.value, 160);
+    const height = toNum(document.getElementById('height')?.value, 5.10);
+    const age = toNum(document.getElementById('age')?.value, 20);
+    const gender = (document.getElementById('gender')?.value || 'Male');
+    const activity = toNum(document.getElementById('activity')?.value, 1.55);
+    const goalInfo = readGoal();
+    return { weight, height, age, gender, activity, goalInfo };
+  }
+
+  function applyGoalAdjustments(calories, weight, goalKey) {
+    const multipliers = { lose: 0.85, maintain: 1.00, gain: 1.15 };
+    const proteinPerLb = { lose: 1.2, maintain: 1.1, gain: 1.4 };
+    const mult = multipliers[goalKey] ?? 1;
+    const protein = Math.round(weight * (proteinPerLb[goalKey] ?? 1.1));
+    const adjusted = Math.round(calories * mult);
+    return { adjustedCalories: adjusted, proteinGrams: protein, multiplier: mult };
+  }
+
+  function updateDisplay(calories, protein, summary) {
+    const c = document.getElementById('user-calories');
+    const p = document.getElementById('user-protein');
+    const s = document.getElementById('user-summary');
+    if (c) c.textContent = "~" + calories;
+    if (p) p.textContent = "~" + protein + "g";
+    if (s) s.textContent = summary;
+  }
+
+  function calculateAndUpdate() {
+    const { weight, height, age, gender, activity, goalInfo } = readInputs();
+    console.log('[calc] inputs:', { weight, height, age, gender, activity, goalInfo });
+
+    // compute BMR similar to your previous formula
+    let bmr;
+    if (String(gender).toLowerCase().startsWith('m')) {
+      bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+    } else {
+      bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+    }
+    const maintenance = bmr * activity;
+
+    const goalKey = (goalInfo && goalInfo.key) || 'maintain';
+    const { adjustedCalories, proteinGrams, multiplier } = applyGoalAdjustments(maintenance, weight, goalKey);
+
+    const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goalKey} (mult ${multiplier})`;
+    console.log('[calc] maintenance:', Math.round(maintenance), 'adjusted:', adjustedCalories, 'protein:', proteinGrams);
+
+    updateDisplay(adjustedCalories, proteinGrams, summary);
+  }
+
+  function doReset() {
+    const form = document.getElementById('calc-form');
+    if (form) form.reset();
+    updateDisplay(0, 0, 'Fill out the form and click calculate to see your results.');
+  }
+
+  // Attach handlers robustly:
+  function attachHandlers() {
+    const form = document.getElementById('calc-form');
+    if (form && !form._bound) {
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
         calculateAndUpdate();
       });
+      form._bound = true;
     }
 
-    // Also handle form submit just in case
-    if (form) {
-      form.addEventListener('submit', (e) => {
+    const calcBtn = document.querySelector('#calculator .form-actions button[type="submit"], #calculate-btn, .btn-primary');
+    if (calcBtn && !calcBtn._bound) {
+      calcBtn.addEventListener('click', function (e) {
         e.preventDefault();
         calculateAndUpdate();
       });
+      calcBtn._bound = true;
     }
 
-    if (resetBtn) {
-      resetBtn.addEventListener('click', (e) => {
+    const resetBtn = document.getElementById('reset-btn') || document.querySelector('#calculator .form-actions button[type="reset"]');
+    if (resetBtn && !resetBtn._bound) {
+      resetBtn.addEventListener('click', function (e) {
         e.preventDefault();
         doReset();
       });
+      resetBtn._bound = true;
     }
-  });
+  }
+
+  attachHandlers();
+  // in case fragment loads asynchronously, try again shortly
+  setTimeout(attachHandlers, 120);
+  setTimeout(attachHandlers, 600);
+
+  // Expose for quick debugging:
+  window.__usc_calc = { readGoal, readInputs, calculateAndUpdate, doReset };
+})();
 </script>
 </body>
 </html>
+
 
 
 
