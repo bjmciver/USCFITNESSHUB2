@@ -1,33 +1,77 @@
 <!-- home.html -->
-<!DOCTYPE html> 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <section id="home" style="background:linear-gradient(to bottom right,#f8f8f8,#e0e0e0); padding-top:3rem;">
-    <div class="two-col">
-      <div>
-        <h2>Welcome to the USC Fitness Hub</h2>
-        <p>
-          College life is exciting, fast-paced, and sometimes overwhelming.
-          The USC Fitness Hub is here to help you stay on track with campus gym resources,
-          nutrition tips, and tools to plan your fitness journey.
-        </p>
+<section id="home">
+  <!-- Local style overrides: these are specific to the home fragment and use !important
+       so they will override conflicting rules in styles.css without you having to edit it. -->
+  <style>
+    /* fragment-scoped overrides for #home */
+    #home {
+      max-width: 1100px !important;
+      margin: 0 auto !important;
+      padding: 3rem 1rem !important;
+      background: linear-gradient(to bottom right,#f8f8f8,#e0e0e0) !important;
+      box-sizing: border-box !important;
+    }
+
+    #home .two-col {
+      display: grid !important;
+      grid-template-columns: 1.1fr 0.9fr !important;
+      gap: 24px !important;
+      align-items: center !important;
+    }
+
+    #home .two-col > div:first-child {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      gap: 12px !important;
+    }
+
+    #home img {
+      width: 100% !important;
+      height: 300px !important;
+      object-fit: cover !important;
+      object-position: center !important;
+      border-radius: 10px !important;
+      display: block !important;
+    }
+
+    /* CTA spacing tweak (keeps your white secondary button look without inline style conflicts) */
+    #home .cta-row { margin-top: 12px !important; display:flex; gap:8px; flex-wrap:wrap; }
+    /* fallback safety for extremely narrow screens */
+    @media (max-width: 900px) {
+      #home .two-col { grid-template-columns: 1fr !important; }
+      #home img { height: 220px !important; }
+    }
+  </style>
+
+  <div class="two-col">
+    <div>
+      <h2>Welcome to the USC Fitness Hub</h2>
+      <p>
+        College life is exciting, fast-paced, and sometimes overwhelming.
+        The USC Fitness Hub is here to help you stay on track with campus gym resources,
+        nutrition tips, and tools to plan your fitness journey.
+      </p>
+
+      <div class="cta-row">
+        <!-- kept the exact CTA appearance you liked -->
         <a href="#gyms" style="display:inline-block; padding:10px 20px; border-radius:6px; background:#000; color:#fff; text-decoration:none; font-weight:bold; border:2px solid #000;">
           Explore Gyms
         </a>
-        <a href="#calculator" style="display:inline-block; padding:10px 20px; border-radius:6px; background:#fff; color:#000; text-decoration:none; font-weight:bold; border:2px solid #000; margin-left:10px;">
+
+        <a href="#calculator" style="display:inline-block; padding:10px 20px; border-radius:6px; background:#fff; color:#000; text-decoration:none; font-weight:bold; border:2px solid #000;">
           Try Calculator
         </a>
       </div>
-      <img src="https://images.unsplash.com/photo-1570829460005-c840387bb1ca?..." alt="Fitness Center" style="width:100%; height:300px; object-fit:cover; border-radius:10px;">
     </div>
-  </section>
-</body>
-</html>
+
+    <div>
+      <img src="https://images.unsplash.com/photo-1570829460005-c840387bb1ca?auto=format&fit=crop&w=900&q=60"
+           alt="Fitness Center">
+    </div>
+  </div>
+</section>
+
 
 
 
