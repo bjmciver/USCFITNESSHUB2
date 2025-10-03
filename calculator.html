@@ -107,9 +107,9 @@
             </div>
 
             <div class="form-actions">
-              <button type="submit" class="btn btn-primary">Calculate</button>
-              <button type="reset" id="reset-btn" class="btn btn-secondary">Reset</button>
-            </div>
+  <button type="button" id="calculate-btn" class="btn btn-primary">Calculate</button>
+  <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
+</div>
           </form>
         </div>
 
@@ -139,61 +139,52 @@
         </div>
       </div> <!-- .calc-grid -->
     </div> <!-- .container -->
+<script>
+(function () {
+  const calcBtn = document.getElementById('calculate-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  const userCalories = document.getElementById('user-calories');
+  const userProtein = document.getElementById('user-protein');
+  const userSummary = document.getElementById('user-summary');
 
-    <script>
-      (function(){
-        const form = document.getElementById('calc-form');
-        if (!form) return;
+  function updateResults(calories, protein, summary) {
+    if (userCalories) userCalories.textContent = "~" + calories;
+    if (userProtein) userProtein.textContent = "~" + protein + "g";
+    if (userSummary) userSummary.textContent = summary;
+  }
 
-        // guard: only init once
-        if (form.dataset.calcInit === '1') return;
-        form.dataset.calcInit = '1';
+  function calculate() {
+    const weight = parseFloat(document.getElementById('weight').value) || 160;
+    const height = parseFloat(document.getElementById('height').value) || 5.10;
+    const age    = parseFloat(document.getElementById('age').value)    || 20;
+    const gender = document.getElementById('gender').value || 'Male';
+    const activity = parseFloat(document.getElementById('activity').value) || 1.55;
 
-        const resetBtn = document.getElementById('reset-btn');
-        const userCalories = document.getElementById('user-calories');
-        const userProtein = document.getElementById('user-protein');
-        const userSummary = document.getElementById('user-summary');
+    let bmr;
+    if (gender === 'Male') {
+      bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+    } else {
+      bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+    }
 
-        function updateResults(calories, protein, summary) {
-          if (userCalories) userCalories.textContent = "~" + calories;
-          if (userProtein)  userProtein.textContent  = "~" + protein + "g";
-          if (userSummary)  userSummary.textContent  = summary;
-        }
+    const calories = Math.round(bmr * activity);
+    const protein = Math.round(weight * 1.1);
+    const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
 
-        form.addEventListener('submit', function(e){
-          e.preventDefault(); // prevent page reload/scroll
+    updateResults(calories, protein, summary);
+  }
 
-          const weight = parseFloat(document.getElementById('weight').value) || 160;
-          const height = parseFloat(document.getElementById('height').value) || 5.10;
-          const age    = parseFloat(document.getElementById('age').value)    || 20;
-          const gender = document.getElementById('gender').value || 'Male';
-          const activity = parseFloat(document.getElementById('activity').value) || 1.55;
-
-          let bmr;
-          if (gender === 'Male') {
-            bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-          } else {
-            bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-          }
-
-          const calories = Math.round(bmr * activity);
-          const protein = Math.round(weight * 1.1);
-          const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
-
-          updateResults(calories, protein, summary);
-        });
-
-        if (resetBtn) {
-          resetBtn.addEventListener('click', function(){
-            updateResults(0, 0, 'Fill out the form and click calculate to see your results.');
-            form.reset();
-          });
-        }
-      })();
-    </script>
+  if (calcBtn) calcBtn.addEventListener('click', calculate);
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    document.getElementById('calc-form').reset();
+    updateResults(0, 0, 'Fill out the form and click calculate to see your results.');
+  });
+})();
+</script>
   </section>
 </body>
 </html>
+
 
 
 
