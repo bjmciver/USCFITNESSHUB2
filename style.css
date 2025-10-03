@@ -372,14 +372,70 @@ h2, h3, h4 { color:#73000a; margin-top:0; }
   grid-template-columns: 1.1fr 0.9fr;  /* makes text take ~55%, image ~45% */
 }
 /* Footer (clean) */
-#footer { background:#0b0b0b; color:#fff; width:100%; }
-#footer .footer-inner { max-width:1100px; margin:0 auto; padding:28px 12px; text-align:center; }
-#footer .footer-nav a,
-#footer .footer-links a { color:#dcdcdc; margin:0 10px; text-decoration:none; font-weight:600; }
-#footer .footer-nav a:hover,
-#footer .footer-links a:hover { color:#fff; text-decoration:underline; }
-#footer .meta { color:#cfcfcf; margin-top:10px; }
-#footer .back-to-top { background:#73000a; color:#fff; padding:10px 16px; border-radius:8px; display:inline-block; margin-top:12px; text-decoration:none; font-weight:700; }
-#footer .back-to-top:hover { background:#8f000f; }
+
+#footer {
+  background: #111;              /* dark background */
+  color: #f1f1f1;                /* softer white text */
+  padding: 40px 20px;            /* more breathing room */
+  text-align: center;
+}
+
+#footer footer > div {
+  max-width: 1100px;             /* match page container */
+  margin: 0 auto;
+}
+
+/* Title / brand line */
+#footer p:first-of-type {
+  font-weight: bold;
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+/* Nav links (Home, Gyms, Nutrition, etc.) */
+#footer nav a {
+  margin: 0 12px;
+  color: #ccc;
+  text-decoration: none;
+  font-weight: 600;
+}
+#footer nav a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Secondary resource links (USC Campus Recreation, Dining, YMCA) */
+#footer div a {
+  margin: 0 12px;
+  color: #aaa;
+  text-decoration: none;
+}
+#footer div a:hover { color: #fff; }
+
+/* Meta line */
+#footer p:last-of-type {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  color: #bbb;
+}
+
+/* Back to Top button */
+#footer .back-to-top {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 10px 18px;
+  background: #73000a;      /* school accent */
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+#footer .back-to-top:hover {
+  background: #900;
+  transform: translateY(-2px);
+}
+
 
 
