@@ -437,6 +437,13 @@ textarea { min-height:110px; }
   .calculator-section .form-actions { flex-direction: column !important; }
   .calculator-section .form-actions .btn { width: 100% !important; }
 }
+/* Center align Calculator heading + subtitle */
+#calculator h2,
+#calculator .section-subtitle {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 
 
