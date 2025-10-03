@@ -6,33 +6,57 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <section id="forms">
+  <section id="forms" class="section">
+  <div class="container">
     <h2 class="section-title">Feedback & Assessment Forms</h2>
-    <div class="two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+    <div class="two-col">
+      <!-- Fitness Assessment -->
       <div class="card">
         <h3>Fitness Assessment</h3>
-        <form>
-          <label>Name *</label><input type="text">
-          <label>Email *</label><input type="email">
+        <form id="fitness-assessment-form" novalidate>
+          <label for="fa-name">Name *</label>
+          <input id="fa-name" name="name" type="text" required>
+
+          <label for="fa-email">Email *</label>
+          <input id="fa-email" name="email" type="email" required>
+
           <label>Goals</label>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0;">
-            <label><input type="checkbox"> Build Muscle</label>
-            <label><input type="checkbox"> Lose Weight</label>
-            <label><input type="checkbox"> Endurance</label>
+          <div class="goals-row" role="group" aria-label="Goals">
+            <label><input type="checkbox" name="goals" value="muscle"> Build Muscle</label>
+            <label><input type="checkbox" name="goals" value="lose"> Lose Weight</label>
+            <label><input type="checkbox" name="goals" value="endurance"> Endurance</label>
           </div>
-          <button type="submit">Submit</button>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn">Reset</button>
+          </div>
         </form>
       </div>
+
+      <!-- Feedback Form -->
       <div class="card">
         <h3>Feedback Form</h3>
-        <form>
-          <label>Name *</label><input type="text">
-          <label>Email *</label><input type="email">
-          <label>Comments</label><textarea rows="5"></textarea>
-          <button type="submit">Submit</button>
+        <form id="feedback-form" novalidate>
+          <label for="fb-name">Name *</label>
+          <input id="fb-name" name="name" type="text" required>
+
+          <label for="fb-email">Email *</label>
+          <input id="fb-email" name="email" type="email" required>
+
+          <label for="fb-comments">Comments</label>
+          <textarea id="fb-comments" name="comments" rows="6"></textarea>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn">Reset</button>
+          </div>
         </form>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 </body>
+
 </html>
