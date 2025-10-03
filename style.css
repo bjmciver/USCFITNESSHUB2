@@ -411,5 +411,18 @@ footer .back-to-top {
 footer .back-to-top:hover {
   background: #900;  /* slightly lighter red on hover */
 }
+/* FORCE footer background */
+#footer, footer, .site-footer {
+  background-color: #111 !important;  /* solid dark background */
+  color: #fff !important;
+  width: 100%;
+  display: block;
+}
+
+/* Make sure child elements inherit */
+#footer * {
+  color: #fff !important;
+}
+
 
 
