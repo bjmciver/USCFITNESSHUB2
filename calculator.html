@@ -159,71 +159,140 @@
 
   <!-- Script: use explicit button clicks (no native submit) -->
   <script>
-    (function () {
-      // Grab DOM nodes
-      const calcBtn = document.getElementById('calculate-btn');
-      const resetBtn = document.getElementById('reset-btn');
-      const weightEl = document.getElementById('weight');
-      const heightEl = document.getElementById('height');
-      const ageEl = document.getElementById('age');
-      const genderEl = document.getElementById('gender');
-      const activityEl = document.getElementById('activity');
-      const userCaloriesEl = document.getElementById('user-calories');
-      const userProteinEl = document.getElementById('user-protein');
-      const userSummaryEl = document.getElementById('user-summary');
-      const formEl = document.getElementById('calc-form');
+(function () {
+  // Robust helper to find the "Calculate" button (tries multiple fallbacks)
+  function findCalculateButton() {
+    let btn = document.getElementById('calculate-btn');
+    if (btn) return btn;
 
-      // Calculate function
-      function calculate() {
-        const weight = parseFloat(weightEl.value) || 160;
-        const height = parseFloat(heightEl.value) || 5.10;
-        const age = parseFloat(ageEl.value) || 20;
-        const gender = (genderEl.value || 'Male');
-        const activity = parseFloat(activityEl.value) || 1.55;
+    // fallback: button with text "Calculate"
+    btn = Array.from(document.querySelectorAll('button, input[type="button"], input[type="submit"]'))
+      .find(el => (el.textContent || el.value || '').trim().toLowerCase() === 'calculate');
+    if (btn) return btn;
 
-        // BMR
-        let bmr;
-        if (gender === 'Male') {
-          bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-        } else {
-          bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-        }
+    // fallback: form submit button if any
+    btn = document.querySelector('form#calc-form button[type="submit"], form#calc-form input[type="submit"]');
+    return btn;
+  }
 
-        const calories = Math.round(bmr * activity);
-        const protein = Math.round(weight * 1.1);
-        const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+  function findResetButton() {
+    let btn = document.getElementById('reset-btn');
+    if (btn) return btn;
+    // fallback: button with text "Reset"
+    return Array.from(document.querySelectorAll('button, input[type="button"], input[type="reset"]'))
+      .find(el => (el.textContent || el.value || '').trim().toLowerCase() === 'reset');
+  }
 
-        // Update UI
-        if (userCaloriesEl) userCaloriesEl.textContent = "~" + calories;
-        if (userProteinEl) userProteinEl.textContent = "~" + protein + "g";
-        if (userSummaryEl) userSummaryEl.textContent = summary;
-      }
+  // Core calculate routine (reads inputs at click time)
+  function calculateAndUpdate() {
+    const weightEl = document.getElementById('weight');
+    const heightEl = document.getElementById('height');
+    const ageEl = document.getElementById('age');
+    const genderEl = document.getElementById('gender');
+    const activityEl = document.getElementById('activity');
+    const userCaloriesEl = document.getElementById('user-calories');
+    const userProteinEl = document.getElementById('user-protein');
+    const userSummaryEl = document.getElementById('user-summary');
 
-      // Reset function
-      function doReset() {
-        if (formEl) formEl.reset();
-        if (userCaloriesEl) userCaloriesEl.textContent = "0";
-        if (userProteinEl) userProteinEl.textContent = "0g";
-        if (userSummaryEl) userSummaryEl.textContent = "Fill out the form and click calculate to see your results.";
-      }
+    // Debug: ensure the three result elements exist
+    if (!userCaloriesEl || !userProteinEl || !userSummaryEl) {
+      console.error('Calculator: result elements not found. Check IDs: user-calories, user-protein, user-summary.');
+      return;
+    }
 
-      // Attach handlers (guard for SPA timing)
-      function attach() {
-        if (calcBtn) calcBtn.addEventListener('click', calculate);
-        if (resetBtn) resetBtn.addEventListener('click', doReset);
-      }
+    // If any input missing, log and use defaults
+    if (!weightEl || !heightEl || !ageEl || !genderEl || !activityEl) {
+      console.warn('Calculator: one or more input elements are missing; using defaults where needed.');
+    }
 
-      // If fragment is injected after initial load, this ensures handlers still attach
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', attach);
-      } else {
-        attach();
-      }
-    })();
-  </script>
+    const weight = weightEl ? parseFloat(weightEl.value) : 160;
+    const height = heightEl ? parseFloat(heightEl.value) : 5.10;
+    const age = ageEl ? parseFloat(ageEl.value) : 20;
+    const gender = (genderEl && genderEl.value) ? genderEl.value : 'Male';
+    const activity = activityEl ? parseFloat(activityEl.value) : 1.55;
+
+    // BMR (same formula you used)
+    let bmr;
+    if (String(gender).toLowerCase().startsWith('m')) {
+      bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+    } else {
+      bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+    }
+
+    const calories = Math.round(bmr * activity);
+    const protein = Math.round(weight * 1.1);
+    const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+
+    userCaloriesEl.textContent = "~" + calories;
+    userProteinEl.textContent = "~" + protein + "g";
+    userSummaryEl.textContent = summary;
+
+    console.info('Calculator: updated results', { calories, protein, summary });
+  }
+
+  function doReset() {
+    const form = document.getElementById('calc-form');
+    if (form) form.reset();
+
+    const userCaloriesEl = document.getElementById('user-calories');
+    const userProteinEl = document.getElementById('user-protein');
+    const userSummaryEl = document.getElementById('user-summary');
+
+    if (userCaloriesEl) userCaloriesEl.textContent = "0";
+    if (userProteinEl) userProteinEl.textContent = "0g";
+    if (userSummaryEl) userSummaryEl.textContent = "Fill out the form and click calculate to see your results.";
+
+    console.info('Calculator: reset performed');
+  }
+
+  // Attach handlers safely after DOM ready
+  function attachHandlers() {
+    const calcBtn = findCalculateButton();
+    const resetBtn = findResetButton();
+
+    if (!calcBtn) {
+      console.error('Calculator: Could not find a Calculate button. Ensure button has id="calculate-btn" or visible text "Calculate".');
+    } else {
+      // guard: remove any previously attached duplicate listeners
+      calcBtn.removeEventListener('click', calculateAndUpdate);
+      calcBtn.addEventListener('click', function (ev) {
+        ev.preventDefault(); // prevent default in case it's a submit button
+        calculateAndUpdate();
+      });
+    }
+
+    if (!resetBtn) {
+      console.warn('Calculator: Could not find Reset button. Ensure button has id="reset-btn" or visible text "Reset".');
+    } else {
+      resetBtn.removeEventListener('click', doReset);
+      resetBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        doReset();
+      });
+    }
+
+    // Also prevent form's native submit (extra safety)
+    const form = document.getElementById('calc-form');
+    if (form) {
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        calculateAndUpdate();
+      });
+    }
+  }
+
+  // Run attach when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachHandlers);
+  } else {
+    attachHandlers();
+  }
+})();
+</script>
 </section>
 </body>
 </html>
+
 
 
 
