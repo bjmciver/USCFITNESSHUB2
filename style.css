@@ -444,6 +444,17 @@ textarea { min-height:110px; }
   margin-left: auto;
   margin-right: auto;
 }
+/* === FORCE: center calculator heading + subtitle === */
+#calculator .container > h2,
+#calculator .container > p.section-subtitle,
+#calculator h2,
+#calculator .section-subtitle,
+.calculator-section h2,
+.calculator-section .section-subtitle {
+  text-align: center !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 
 
 
