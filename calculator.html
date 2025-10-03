@@ -54,136 +54,177 @@
 </head>
 <body>
   <section id="calculator" class="calculator-section">
-    <div class="container">
-      <h2>Fitness Calculator</h2>
-      <p class="section-subtitle">Enter your info below to get tailored calorie and protein goals.</p>
+  <div class="container">
+    <h2>Fitness Calculator</h2>
+    <p class="section-subtitle">Enter your info below to get tailored calorie and protein goals.</p>
 
-      <div class="calc-grid">
-        <!-- LEFT: form -->
-        <div class="card form-card">
-          <h3 style="margin-top:0; margin-bottom:8px;">Personal Information</h3>
+    <div class="calc-grid">
+      <!-- LEFT: form card -->
+      <div class="card form-card">
+        <h3 style="margin-top:0; margin-bottom:8px;">Personal Information</h3>
 
-          <form id="calc-form" novalidate>
-            <div class="field">
-              <label for="height">Height (ft — decimal)</label>
-              <input id="height" name="height" type="number" step="0.01" placeholder="5.10">
+        <!-- NOTE: form kept for semantics but buttons are type="button" to avoid native submit -->
+        <form id="calc-form" novalidate>
+          <div class="field">
+            <label for="height">Height (ft — decimal)</label>
+            <input id="height" name="height" type="number" step="0.01" placeholder="5.10" value="5.10" />
+          </div>
+
+          <div class="field">
+            <label for="weight">Weight (lbs)</label>
+            <input id="weight" name="weight" type="number" placeholder="160" value="160" />
+          </div>
+
+          <div class="field">
+            <label for="age">Age</label>
+            <input id="age" name="age" type="number" placeholder="20" value="20" />
+          </div>
+
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender">
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="activity">Activity Level</label>
+            <select id="activity" name="activity">
+              <option value="1.2">Sedentary</option>
+              <option value="1.375">Lightly Active</option>
+              <option value="1.55">Moderately Active</option>
+              <option value="1.725">Very Active</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Goal</label>
+            <div class="goal-options" role="radiogroup" aria-label="Goal">
+              <label><input type="radio" name="goal" value="lose"> Lose Weight</label>
+              <label><input type="radio" name="goal" value="maintain" checked> Maintain</label>
+              <label><input type="radio" name="goal" value="gain"> Gain</label>
             </div>
+          </div>
 
-            <div class="field">
-              <label for="weight">Weight (lbs)</label>
-              <input id="weight" name="weight" type="number" placeholder="160">
-            </div>
+          <!-- Buttons changed to type="button" so no native submit occurs -->
+          <div class="form-actions" style="margin-top:8px;">
+            <button type="button" id="calculate-btn" class="btn btn-primary">Calculate</button>
+            <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
+          </div>
+        </form>
+      </div>
 
-            <div class="field">
-              <label for="age">Age</label>
-              <input id="age" name="age" type="number" placeholder="20">
-            </div>
-
-            <div class="field">
-              <label for="gender">Gender</label>
-              <select id="gender" name="gender">
-                <option>Male</option>
-                <option>Female</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="activity">Activity Level</label>
-              <select id="activity" name="activity">
-                <option value="1.2">Sedentary</option>
-                <option value="1.375">Lightly Active</option>
-                <option value="1.55">Moderately Active</option>
-                <option value="1.725">Very Active</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>Goal</label>
-              <div class="goal-options" role="radiogroup" aria-label="Goal">
-                <label><input type="radio" name="goal" value="lose"> Lose Weight</label>
-                <label><input type="radio" name="goal" value="maintain" checked> Maintain</label>
-                <label><input type="radio" name="goal" value="gain"> Gain</label>
-              </div>
-            </div>
-
-            <div class="form-actions">
-  <button type="button" id="calculate-btn" class="btn btn-primary">Calculate</button>
-  <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
-</div>
-          </form>
+      <!-- RIGHT: image + example + user result -->
+      <div>
+        <div class="card">
+          <img class="calc-img" src="https://images.unsplash.com/photo-1685660477895-f1b6a417466b?auto=format&fit=crop&w=1080&q=60" alt="Health device" />
         </div>
 
-        <!-- RIGHT: image + results -->
-        <div>
-          <div class="card">
-            <img class="calc-img" src="https://images.unsplash.com/photo-1685660477895-f1b6a417466b?auto=format&fit=crop&w=1080&q=60" alt="Health device">
-          </div>
-
-          <div class="card result-card">
-            <h3>Example Result</h3>
-            <p>A 20-year-old student, 5’10”, 160 lbs, moderately active, trying to gain weight and muscle</p>
-            <div class="result-grid">
-              <div class="result-box"><strong>~2,700</strong><span>Calories to maintain</span></div>
-              <div class="result-box"><strong>~170g</strong><span>Protein goal</span></div>
-            </div>
-          </div>
-
-          <div id="user-result" class="card result-card">
-            <h3>Your Result</h3>
-            <p id="user-summary">Fill out the form and click calculate to see your results.</p>
-            <div class="result-grid">
-              <div class="result-box"><strong id="user-calories">0</strong><span>Calories to maintain</span></div>
-              <div class="result-box"><strong id="user-protein">0g</strong><span>Protein goal</span></div>
-            </div>
+        <div class="card" style="margin-top:12px;">
+          <h3 style="margin-top:0; margin-bottom:8px; text-align:center;">Example Result</h3>
+          <p style="text-align:center; color:#555; margin:0 0 12px;">A 20-year-old student, 5’10”, 160 lbs, moderately active, trying to gain weight and muscle</p>
+          <div class="result-grid">
+            <div class="result-box"><strong>~2,700</strong><span>Calories to maintain</span></div>
+            <div class="result-box"><strong>~170g</strong><span>Protein goal</span></div>
           </div>
         </div>
-      </div> <!-- .calc-grid -->
-    </div> <!-- .container -->
-<script>
-(function () {
-  const calcBtn = document.getElementById('calculate-btn');
-  const resetBtn = document.getElementById('reset-btn');
-  const userCalories = document.getElementById('user-calories');
-  const userProtein = document.getElementById('user-protein');
-  const userSummary = document.getElementById('user-summary');
 
-  function updateResults(calories, protein, summary) {
-    if (userCalories) userCalories.textContent = "~" + calories;
-    if (userProtein) userProtein.textContent = "~" + protein + "g";
-    if (userSummary) userSummary.textContent = summary;
-  }
+        <div id="user-result" class="card" style="margin-top:12px;">
+          <h3 style="margin-top:0; margin-bottom:8px; text-align:center;">Your Result</h3>
+          <p id="user-summary" style="text-align:center; color:#555; margin:0 0 12px;">Fill out the form and click calculate to see your results.</p>
+          <div class="result-grid">
+            <div class="result-box"><strong id="user-calories">0</strong><span>Calories to maintain</span></div>
+            <div class="result-box"><strong id="user-protein">0g</strong><span>Protein goal</span></div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- .calc-grid -->
+  </div> <!-- .container -->
 
-  function calculate() {
-    const weight = parseFloat(document.getElementById('weight').value) || 160;
-    const height = parseFloat(document.getElementById('height').value) || 5.10;
-    const age    = parseFloat(document.getElementById('age').value)    || 20;
-    const gender = document.getElementById('gender').value || 'Male';
-    const activity = parseFloat(document.getElementById('activity').value) || 1.55;
+  <!-- Minimal local CSS to keep style intact (can be removed if you already have these in styles.css) -->
+  <style>
+    .calc-grid { display:grid; grid-template-columns: 1fr 380px; gap:20px; max-width:960px; margin:0 auto; padding:0 8px; box-sizing:border-box; }
+    @media (max-width:980px) { .calc-grid { grid-template-columns:1fr; } }
+    .card { background:#fff; border:1px solid #e6e6e6; border-radius:10px; padding:16px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
+    .form-card .field { margin-bottom:10px; }
+    .form-actions { display:flex; gap:12px; }
+    .btn { padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer; border:none; }
+    .btn-primary { background:#73000a; color:#fff; }
+    .btn-secondary { background:#fff; border:1px solid #d0d0d0; color:#111; }
+    .calc-img { width:100%; height:220px; object-fit:cover; border-radius:8px; display:block; }
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .result-box { background:#f3f3f3; border-radius:8px; padding:14px; text-align:center; }
+  </style>
 
-    let bmr;
-    if (gender === 'Male') {
-      bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-    } else {
-      bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-    }
+  <!-- Script: use explicit button clicks (no native submit) -->
+  <script>
+    (function () {
+      // Grab DOM nodes
+      const calcBtn = document.getElementById('calculate-btn');
+      const resetBtn = document.getElementById('reset-btn');
+      const weightEl = document.getElementById('weight');
+      const heightEl = document.getElementById('height');
+      const ageEl = document.getElementById('age');
+      const genderEl = document.getElementById('gender');
+      const activityEl = document.getElementById('activity');
+      const userCaloriesEl = document.getElementById('user-calories');
+      const userProteinEl = document.getElementById('user-protein');
+      const userSummaryEl = document.getElementById('user-summary');
+      const formEl = document.getElementById('calc-form');
 
-    const calories = Math.round(bmr * activity);
-    const protein = Math.round(weight * 1.1);
-    const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+      // Calculate function
+      function calculate() {
+        const weight = parseFloat(weightEl.value) || 160;
+        const height = parseFloat(heightEl.value) || 5.10;
+        const age = parseFloat(ageEl.value) || 20;
+        const gender = (genderEl.value || 'Male');
+        const activity = parseFloat(activityEl.value) || 1.55;
 
-    updateResults(calories, protein, summary);
-  }
+        // BMR
+        let bmr;
+        if (gender === 'Male') {
+          bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+        } else {
+          bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+        }
 
-  if (calcBtn) calcBtn.addEventListener('click', calculate);
-  if (resetBtn) resetBtn.addEventListener('click', () => {
-    document.getElementById('calc-form').reset();
-    updateResults(0, 0, 'Fill out the form and click calculate to see your results.');
-  });
-})();
-</script>
-  </section>
+        const calories = Math.round(bmr * activity);
+        const protein = Math.round(weight * 1.1);
+        const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+
+        // Update UI
+        if (userCaloriesEl) userCaloriesEl.textContent = "~" + calories;
+        if (userProteinEl) userProteinEl.textContent = "~" + protein + "g";
+        if (userSummaryEl) userSummaryEl.textContent = summary;
+      }
+
+      // Reset function
+      function doReset() {
+        if (formEl) formEl.reset();
+        if (userCaloriesEl) userCaloriesEl.textContent = "0";
+        if (userProteinEl) userProteinEl.textContent = "0g";
+        if (userSummaryEl) userSummaryEl.textContent = "Fill out the form and click calculate to see your results.";
+      }
+
+      // Attach handlers (guard for SPA timing)
+      function attach() {
+        if (calcBtn) calcBtn.addEventListener('click', calculate);
+        if (resetBtn) resetBtn.addEventListener('click', doReset);
+      }
+
+      // If fragment is injected after initial load, this ensures handlers still attach
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attach);
+      } else {
+        attach();
+      }
+    })();
+  </script>
+</section>
 </body>
 </html>
+
 
 
 
