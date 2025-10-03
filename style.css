@@ -272,6 +272,41 @@ textarea { min-height:110px; }
   #forms .form-actions { flex-direction: column; align-items: stretch; }
   #forms .form-actions .btn { width: 100%; }
 }
+/* --- Nutrition: 2x2 grid on desktop, 1 column on small screens --- */
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* two columns */
+  gap: 20px;
+  align-items: start;                     /* make cards align to the top */
+}
+
+/* Make each card stretch to fill its grid cell vertically for consistent blocks */
+.nutrition-grid .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* If one card contains only an image and you want the image to keep aspect ratio
+   without stretching the card, constrain the image and let the card keep some padding */
+.nutrition-grid .card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+/* A small helper so the inner content stacks and the "box" part sits at top */
+.nutrition-grid .card > * { margin: 0 0 12px; }
+
+/* Responsive: switch to single column on narrow screens */
+@media (max-width: 900px) {
+  .nutrition-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 
 
