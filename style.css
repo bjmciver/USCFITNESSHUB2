@@ -306,52 +306,52 @@ textarea { min-height:110px; }
     grid-template-columns: 1fr;
   }
 }
-/* Force calculator form controls onto their own rows */
+/* --- Calculator Form Polish --- */
 #calculator form {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* space between fields */
+  gap: 16px; /* consistent vertical spacing */
 }
 
-/* Make labels block-level and spaced */
 #calculator label {
   display: block;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 4px; /* label-to-input spacing */
   color: #222;
 }
 
-/* Make inputs/selects full-width */
 #calculator input[type="number"],
 #calculator select {
   width: 100%;
-  padding: 8px 10px;
+  padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  font-size: 0.95rem;
   box-sizing: border-box;
 }
 
-/* Put each radio option on its own line */
-#calculator input[type="radio"] {
-  margin-right: 6px;
-}
-#calculator input[type="radio"] + label,
-#calculator label input[type="radio"] {
-  display: inline-block;
-}
+/* Goal radio group */
 #calculator .goal-options {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 8px; /* space between radios */
+}
+#calculator .goal-options label {
+  font-weight: 500;
+  margin: 0; /* don’t add extra top margin here */
 }
 
-/* Style the buttons */
+/* Buttons row */
+#calculator .form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px; /* separate from radios */
+}
 #calculator button {
   padding: 8px 14px;
   border-radius: 6px;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
 }
 #calculator button[type="submit"] {
   background: #73000a;
