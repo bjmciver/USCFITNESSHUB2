@@ -188,5 +188,90 @@ textarea { min-height:110px; }
   .grocery-grid { grid-template-columns: repeat(2,1fr); }
   .container { width:94%; }
 }
+/* ===== Forms: layout & visual parity with site ===== */
+#forms {
+  padding: 3rem 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* center and constrain like other pages */
+#forms .container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 8px;
+}
+
+/* two-column form layout that matches site grid */
+#forms .two-col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* responsive: stack on small screens */
+@media (max-width: 900px) {
+  #forms .two-col { grid-template-columns: 1fr; }
+}
+
+/* card visual parity */
+#forms .card {
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid #e6e6e6;
+  background: var(--card-bg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin: 0;
+}
+
+/* tidy the form internals */
+#forms form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* don't double-space labels — keep consistent */
+#forms label { margin-top: 0.25rem; font-weight:700; color:#222; }
+
+/* checkbox group layout */
+#forms .goals-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#forms input[type="checkbox"] { margin-right:8px; transform: translateY(1px); }
+
+/* form action buttons aligned with other pages */
+#forms .form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-top: 6px;
+}
+
+/* use existing site button styles */
+#forms .btn { padding: 10px 14px; border-radius:8px; }
+
+/* small visual tweaks for inputs/textareas */
+#forms input, #forms select, #forms textarea {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+/* reduce default margin from headings inside cards */
+#forms h3 { margin-top: 0; margin-bottom: 6px; color: var(--accent); }
+
+/* small screens: full-width buttons */
+@media (max-width:480px) {
+  #forms .form-actions { flex-direction: column; align-items: stretch; }
+  #forms .form-actions .btn { width: 100%; }
+}
+
 
 
