@@ -21,12 +21,12 @@
           <label for="fa-email">Email *</label>
           <input id="fa-email" name="email" type="email" required>
 
-          <label>Goals</label>
-          <div class="goals-row" role="group" aria-label="Goals">
-            <label><input type="checkbox" name="goals" value="muscle"> Build Muscle</label>
-            <label><input type="checkbox" name="goals" value="lose"> Lose Weight</label>
-            <label><input type="checkbox" name="goals" value="endurance"> Endurance</label>
-          </div>
+          <label>Goal</label>
+<div class="goal-options">
+  <label><input type="radio" name="goal" value="lose"> Lose Weight</label>
+  <label><input type="radio" name="goal" value="maintain" checked> Maintain</label>
+  <label><input type="radio" name="goal" value="gain"> Gain</label>
+</div>
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -60,3 +60,4 @@
 </body>
 
 </html>
+
