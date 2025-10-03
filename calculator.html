@@ -38,8 +38,8 @@
 </head>
 <body>
   <div class="container">
-   <section id="calculator" class="calculator-section" aria-label="Fitness calculator">
-  <div class="container">
+   <section id="calc-root" class="calculator-section" aria-label="Fitness calculator">
+  <div class="calc-container">
     <h2>Fitness Calculator</h2>
     <p class="section-subtitle">Enter your info below to get tailored calorie and protein goals.</p>
 
@@ -48,33 +48,33 @@
       <div class="card form-card">
         <h3 style="margin-top:0; margin-bottom:8px;">Personal Information</h3>
 
-        <form id="calc-form" novalidate>
+        <form id="calc-form-scoped" novalidate>
           <div class="field">
-            <label for="height">Height (ft — decimal)</label>
-            <input id="height" name="height" type="number" step="0.01" placeholder="5.10" value="5.10" />
+            <label for="calc-height">Height (ft — decimal)</label>
+            <input id="calc-height" name="height" type="number" step="0.01" placeholder="5.10" value="5.10" />
           </div>
 
           <div class="field">
-            <label for="weight">Weight (lbs)</label>
-            <input id="weight" name="weight" type="number" placeholder="160" value="160" />
+            <label for="calc-weight">Weight (lbs)</label>
+            <input id="calc-weight" name="weight" type="number" placeholder="160" value="160" />
           </div>
 
           <div class="field">
-            <label for="age">Age</label>
-            <input id="age" name="age" type="number" placeholder="20" value="20" />
+            <label for="calc-age">Age</label>
+            <input id="calc-age" name="age" type="number" placeholder="20" value="20" />
           </div>
 
           <div class="field">
-            <label for="gender">Gender</label>
-            <select id="gender" name="gender" aria-label="Gender">
+            <label for="calc-gender">Gender</label>
+            <select id="calc-gender" name="gender" aria-label="Gender">
               <option>Male</option>
               <option>Female</option>
             </select>
           </div>
 
           <div class="field">
-            <label for="activity">Activity Level</label>
-            <select id="activity" name="activity" aria-label="Activity level">
+            <label for="calc-activity">Activity Level</label>
+            <select id="calc-activity" name="activity" aria-label="Activity level">
               <option value="1.2">Sedentary</option>
               <option value="1.375">Lightly Active</option>
               <option value="1.55" selected>Moderately Active</option>
@@ -85,16 +85,15 @@
           <div class="field">
             <label>Goal</label>
             <div class="goal-options" role="radiogroup" aria-label="Goal">
-              <label><input type="radio" name="goal" value="lose"> Lose Weight</label>
-              <label><input type="radio" name="goal" value="maintain" checked> Maintain</label>
-              <label><input type="radio" name="goal" value="gain"> Gain</label>
+              <label><input type="radio" name="calc-goal" value="lose"> Lose Weight</label>
+              <label><input type="radio" name="calc-goal" value="maintain" checked> Maintain</label>
+              <label><input type="radio" name="calc-goal" value="gain"> Gain</label>
             </div>
           </div>
 
           <div class="form-actions" style="margin-top:12px;">
-            <!-- MAKE CALCULATE a BUTTON (not submit) to avoid native submit/jump -->
-            <button type="button" id="calc-btn" class="btn btn-primary">Calculate</button>
-            <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
+            <button type="button" id="calc-button" class="btn btn-primary">Calculate</button>
+            <button type="button" id="calc-reset" class="btn btn-secondary">Reset</button>
           </div>
         </form>
       </div>
@@ -118,85 +117,82 @@
 
         <div id="user-result" class="card" style="margin-top:12px;">
           <h3 style="margin-top:0; margin-bottom:8px; text-align:center;">Your Result</h3>
-          <p id="user-summary" style="text-align:center; color:#555; margin:0 0 12px;">Fill out the form and click calculate to see your results.</p>
+          <p id="calc-summary" style="text-align:center; color:#555; margin:0 0 12px;">Fill out the form and click calculate to see your results.</p>
           <div class="result-grid">
-            <div class="result-box"><strong id="user-calories">0</strong><span>Calories to maintain</span></div>
-            <div class="result-box"><strong id="user-protein">0g</strong><span>Protein goal</span></div>
+            <div class="result-box"><strong id="calc-calories">0</strong><span>Calories to maintain</span></div>
+            <div class="result-box"><strong id="calc-protein">0g</strong><span>Protein goal</span></div>
           </div>
         </div>
       </div>
     </div> <!-- .calc-grid -->
-  </div> <!-- .container -->
+  </div> <!-- .calc-container -->
 
+  <!-- Local CSS (safe + scoped) -->
   <style>
-    /* minimal local CSS (won't interfere with global unless overwritten) */
-    .calculator-section .calc-grid { display:grid; grid-template-columns: 1fr 360px; gap:20px; max-width:920px; margin:0 auto; padding:0 8px; align-items:start; box-sizing:border-box; }
-    @media (max-width:980px) { .calculator-section .calc-grid { grid-template-columns:1fr; } }
-    .form-card .field { margin-bottom:6px; }
-    .goal-options { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
-    .form-actions .btn { padding:8px 14px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
-    .btn-primary { background:#73000a; color:#fff; }
-    .btn-secondary { background:#fff; border:1px solid #ddd; color:#111; }
-    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
-    .result-box { background:#f3f3f3; border-radius:8px; padding:14px; text-align:center; }
+    /* Scoped styles — won’t clash with other fragments */
+    #calc-root .calc-container { max-width:960px; margin:0 auto; padding:0 12px; box-sizing:border-box; }
+    #calc-root h2 { color: #73000a; text-align:center; margin:0 0 6px; }
+    #calc-root .section-subtitle { text-align:center; color:#555; margin:0 0 18px; }
+
+    #calc-root .calc-grid { display:grid; grid-template-columns: 1fr 360px; gap:18px; align-items:start; max-width:920px; margin:0 auto; }
+    @media (max-width:880px) { #calc-root .calc-grid { grid-template-columns:1fr; } }
+
+    #calc-root .card { background:#fff; border:1px solid #e6e6e6; border-radius:10px; padding:16px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
+    #calc-root label { display:block; font-weight:700; margin:8px 0 6px; }
+    #calc-root input[type="number"], #calc-root select { width:100%; padding:9px 10px; border:1px solid #ddd; border-radius:6px; box-sizing:border-box; }
+
+    #calc-root .goal-options { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+    #calc-root .form-actions { display:flex; gap:10px; margin-top:12px; }
+    #calc-root .btn { padding:9px 14px; border-radius:8px; font-weight:700; cursor:pointer; border:none; }
+    #calc-root .btn-primary { background:#73000a; color:#fff; }
+    #calc-root .btn-secondary { background:#fff; color:#111; border:1px solid #d0d0d0; }
+
+    #calc-root .calc-img { width:100%; height:200px; object-fit:cover; border-radius:8px; display:block; }
+    #calc-root .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    #calc-root .result-box { background:#f3f3f3; border-radius:8px; padding:10px; text-align:center; }
+    @media (max-width:540px) { #calc-root .calc-img { height:160px; } #calc-root .form-actions { flex-direction:column; } #calc-root .form-actions .btn { width:100%; } }
   </style>
 
+  <!-- Scoped JS: robust to SPA insertion and repeated loads -->
   <script>
     (function () {
-      // One-time guard (safe even if fragment is re-inserted)
-      if (window.__usc_calc_scoped_bound) return;
-      window.__usc_calc_scoped_bound = true;
+      // guard to avoid double-binding when SPA inserts fragments multiple times
+      if (window.__usc_calc_fragment_bound) return;
+      window.__usc_calc_fragment_bound = true;
 
-      const root = document.getElementById('calculator');
+      const root = document.getElementById('calc-root');
       if (!root) return;
 
-      // safety: ensure form cannot navigate by normal submit
-      const form = root.querySelector('#calc-form');
-      if (form) {
-        try {
-          // block any native navigation if enter/submit occurs
-          form.action = "javascript:void(0);";
-          form.onsubmit = function (e) {
-            if (e && e.preventDefault) e.preventDefault();
-            // call compute if user pressed Enter
-            computeAndShow();
-            return false;
-          };
-        } catch (err) {
-          // ignore — defensive
-        }
-      }
-
-      // scoped selectors
-      const $ = (sel) => root.querySelector(sel);
+      const q = sel => root.querySelector(sel);
 
       function toNum(v, fallback = 0) {
         const n = parseFloat(String(v || '').trim());
         return Number.isFinite(n) ? n : fallback;
       }
 
-      function getGoalKey() {
-        const checked = root.querySelector('input[name="goal"]:checked');
+      function getGoal() {
+        const checked = q('input[name="calc-goal"]:checked');
         return checked && checked.value ? checked.value.toLowerCase() : 'maintain';
       }
 
-      function updateDisplay(calories, protein, summary) {
-        const c = $('#user-calories');
-        const p = $('#user-protein');
-        const s = $('#user-summary');
-        if (c) c.textContent = "~" + Math.round(calories);
+      function updateDisplay(cal, protein, summary) {
+        const c = q('#calc-calories');
+        const p = q('#calc-protein');
+        const s = q('#calc-summary');
+        if (c) c.textContent = "~" + Math.round(cal);
         if (p) p.textContent = "~" + Math.round(protein) + "g";
         if (s) s.textContent = summary;
       }
 
       function computeAndShow() {
-        const weight = toNum($('#weight')?.value, 160);
-        const height = toNum($('#height')?.value, 5.10);
-        const age = toNum($('#age')?.value, 20);
-        const gender = ($('#gender')?.value || 'Male').toLowerCase();
-        const activity = toNum($('#activity')?.value, 1.55);
-        const goal = getGoalKey();
+        const weight = toNum(q('#calc-weight')?.value, 160);
+        const height = toNum(q('#calc-height')?.value, 5.10);
+        const age = toNum(q('#calc-age')?.value, 20);
+        const gender = (q('#calc-gender')?.value || 'Male').toLowerCase();
+        const activity = toNum(q('#calc-activity')?.value, 1.55);
+        const goal = getGoal(); // lose|maintain|gain
 
+        // BMR (approx)
         let bmr;
         if (gender.startsWith('m')) {
           bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
@@ -211,35 +207,36 @@
         const mult = goalMultipliers[goal] ?? 1;
         const calories = maintenance * mult;
         const protein = weight * (proteinPerLb[goal] ?? 1.1);
-        const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goal}`;
 
+        const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goal}`;
         updateDisplay(calories, protein, summary);
       }
 
-      // bind UI controls inside fragment
-      const calcBtn = $('#calc-btn');
-      const resetBtn = $('#reset-btn');
+      // bind UI
+      const calcBtn = q('#calc-button');
+      const resetBtn = q('#calc-reset');
+      const form = q('#calc-form-scoped');
 
-      if (calcBtn) {
-        calcBtn.addEventListener('click', function (e) {
+      if (calcBtn) calcBtn.addEventListener('click', (e) => { e.preventDefault(); computeAndShow(); });
+      if (resetBtn) resetBtn.addEventListener('click', (e) => { e.preventDefault(); if (form) form.reset(); updateDisplay(0,0,'Fill out the form and click calculate to see your results.'); });
+
+      // If the user presses Enter inside the form, prevent native submit and compute
+      if (form) {
+        form.addEventListener('submit', function (e) {
           e.preventDefault();
           computeAndShow();
         });
       }
 
-      if (resetBtn) {
-        resetBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          if (form) form.reset();
-          updateDisplay(0, 0, 'Fill out the form and click calculate to see your results.');
-        });
-      }
-
-      // compute initial defaults so user sees values right away
+      // show defaults on load
       computeAndShow();
     })();
   </script>
 </section>
+  </div>
+</body>
+</html>
+
 
 
 
