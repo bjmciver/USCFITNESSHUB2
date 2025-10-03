@@ -92,7 +92,8 @@
           </div>
 
           <div class="form-actions" style="margin-top:12px;">
-            <button type="submit" id="calc-btn" class="btn btn-primary">Calculate</button>
+            <!-- MAKE CALCULATE a BUTTON (not submit) to avoid native submit/jump -->
+            <button type="button" id="calc-btn" class="btn btn-primary">Calculate</button>
             <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
           </div>
         </form>
@@ -127,7 +128,7 @@
     </div> <!-- .calc-grid -->
   </div> <!-- .container -->
 
-  <!-- Minimal local styles (won’t override your global styles) -->
+  <!-- Minimal local styles -->
   <style>
     .calculator-section .calc-grid { display:grid; grid-template-columns: 1fr 360px; gap:20px; max-width:920px; margin:0 auto; padding:0 8px; align-items:start; box-sizing:border-box; }
     @media (max-width:980px) { .calculator-section .calc-grid { grid-template-columns:1fr; } }
@@ -140,42 +141,47 @@
     .result-box { background:#f3f3f3; border-radius:8px; padding:14px; text-align:center; }
   </style>
 
-  <!-- Script: simple, robust, and safe to run multiple times -->
+  <!-- Scoped, idempotent script: queries scoped to this section to avoid collisions -->
   <script>
     (function () {
-      // Avoid double-binding
-      if (window.__usc_calc_bound) return;
-      window.__usc_calc_bound = true;
+      // guard so the script isn't bound twice
+      if (window.__usc_calc_scoped_bound) return;
+      window.__usc_calc_scoped_bound = true;
 
-      function toNum(v, fallback=0) {
+      const root = document.getElementById('calculator');
+      if (!root) return; // nothing to do
+
+      // helpers that operate inside the root only
+      const $ = (sel) => root.querySelector(sel);
+      const $all = (sel) => Array.from(root.querySelectorAll(sel));
+
+      function toNum(v, fallback = 0) {
         const n = parseFloat(String(v || '').trim());
         return Number.isFinite(n) ? n : fallback;
       }
 
       function getGoalKey() {
-        const checked = document.querySelector('input[name="goal"]:checked');
-        if (checked && checked.value) return checked.value.toLowerCase();
-        return 'maintain';
+        const checked = root.querySelector('input[name="goal"]:checked');
+        return checked && checked.value ? checked.value.toLowerCase() : 'maintain';
       }
 
-      function updateDisplay(cal, protein, summary) {
-        const c = document.getElementById('user-calories');
-        const p = document.getElementById('user-protein');
-        const s = document.getElementById('user-summary');
-        if (c) c.textContent = "~" + Math.round(cal);
+      function updateDisplay(calories, protein, summary) {
+        const c = $('#user-calories');
+        const p = $('#user-protein');
+        const s = $('#user-summary');
+        if (c) c.textContent = "~" + Math.round(calories);
         if (p) p.textContent = "~" + Math.round(protein) + "g";
         if (s) s.textContent = summary;
       }
 
       function computeAndShow() {
-        const weight = toNum(document.getElementById('weight')?.value, 160);
-        const height = toNum(document.getElementById('height')?.value, 5.10);
-        const age = toNum(document.getElementById('age')?.value, 20);
-        const gender = (document.getElementById('gender')?.value || 'Male').toLowerCase();
-        const activity = toNum(document.getElementById('activity')?.value, 1.55);
-        const goal = getGoalKey(); // 'lose'|'maintain'|'gain'
+        const weight = toNum($('#weight')?.value, 160);
+        const height = toNum($('#height')?.value, 5.10);
+        const age = toNum($('#age')?.value, 20);
+        const gender = ($('#gender')?.value || 'Male').toLowerCase();
+        const activity = toNum($('#activity')?.value, 1.55);
+        const goal = getGoalKey(); // lose / maintain / gain
 
-        // BMR (approx Mifflin/Harris style you used)
         let bmr;
         if (gender.startsWith('m')) {
           bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
@@ -189,28 +195,28 @@
         const proteinPerLb = { lose: 1.2, maintain: 1.1, gain: 1.4 };
 
         const mult = goalMultipliers[goal] ?? 1;
-        const protein = weight * (proteinPerLb[goal] ?? 1.1);
         const calories = maintenance * mult;
+        const protein = weight * (proteinPerLb[goal] ?? 1.1);
 
         const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goal}`;
         updateDisplay(calories, protein, summary);
       }
 
-      // attach handlers (form submit + separate button handlers)
-      const form = document.getElementById('calc-form');
-      const calcBtn = document.getElementById('calc-btn');
-      const resetBtn = document.getElementById('reset-btn');
+      // bind buttons inside root
+      const calcBtn = $('#calc-btn');
+      const resetBtn = $('#reset-btn');
+      const form = $('#calc-form');
 
-      if (form) {
-        form.addEventListener('submit', function (e) {
+      if (calcBtn) {
+        calcBtn.addEventListener('click', function (e) {
           e.preventDefault();
           computeAndShow();
         });
       }
 
-      if (calcBtn) {
-        calcBtn.addEventListener('click', function (e) {
-          // in case the form isn't catching submit for any reason
+      // keep form submit safe if user presses Enter
+      if (form) {
+        form.addEventListener('submit', function (e) {
           e.preventDefault();
           computeAndShow();
         });
@@ -219,19 +225,19 @@
       if (resetBtn) {
         resetBtn.addEventListener('click', function (e) {
           e.preventDefault();
-          // clear form & results
           if (form) form.reset();
           updateDisplay(0, 0, 'Fill out the form and click calculate to see your results.');
         });
       }
 
-      // Helpful: compute once to show defaults
+      // show defaults immediately
       computeAndShow();
     })();
   </script>
 </section>
 </body>
 </html>
+
 
 
 
