@@ -371,58 +371,15 @@ h2, h3, h4 { color:#73000a; margin-top:0; }
 #home .two-col {
   grid-template-columns: 1.1fr 0.9fr;  /* makes text take ~55%, image ~45% */
 }
-/* Force footer background & text color */
-footer, #footer, .site-footer {
-  background-color: #111;   /* solid dark background */
-  color: #fff;              /* all text inside turns white */
-  padding: 2rem 1rem;
-  text-align: center;
-}
-
-/* Footer links */
-footer a {
-  color: #eee;
-  text-decoration: none;
-  margin: 0 10px;
-  font-weight: 600;
-}
-footer a:hover {
-  color: #fff;
-  text-decoration: underline;
-}
-
-/* Footer paragraph text */
-footer p {
-  color: #ccc;
-  margin: 0.5rem 0;
-}
-
-/* Back-to-top button */
-footer .back-to-top {
-  display: inline-block;
-  margin-top: 12px;
-  padding: 10px 18px;
-  background: #73000a; /* school accent red */
-  color: #fff;
-  border-radius: 8px;
-  font-weight: bold;
-  text-decoration: none;
-}
-footer .back-to-top:hover {
-  background: #900;  /* slightly lighter red on hover */
-}
-/* FORCE footer background */
-#footer, footer, .site-footer {
-  background-color: #111 !important;  /* solid dark background */
-  color: #fff !important;
-  width: 100%;
-  display: block;
-}
-
-/* Make sure child elements inherit */
-#footer * {
-  color: #fff !important;
-}
-
+/* Footer (clean) */
+#footer { background:#0b0b0b; color:#fff; width:100%; }
+#footer .footer-inner { max-width:1100px; margin:0 auto; padding:28px 12px; text-align:center; }
+#footer .footer-nav a,
+#footer .footer-links a { color:#dcdcdc; margin:0 10px; text-decoration:none; font-weight:600; }
+#footer .footer-nav a:hover,
+#footer .footer-links a:hover { color:#fff; text-decoration:underline; }
+#footer .meta { color:#cfcfcf; margin-top:10px; }
+#footer .back-to-top { background:#73000a; color:#fff; padding:10px 16px; border-radius:8px; display:inline-block; margin-top:12px; text-decoration:none; font-weight:700; }
+#footer .back-to-top:hover { background:#8f000f; }
 
 
