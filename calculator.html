@@ -91,8 +91,9 @@
             </div>
           </div>
 
+          <!-- NOTE: buttons are type="button" so native form submit won't trigger a page jump -->
           <div class="form-actions" style="margin-top:12px;">
-            <button type="submit" id="calc-btn" class="btn btn-primary">Calculate</button>
+            <button type="button" id="calc-btn" class="btn btn-primary">Calculate</button>
             <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
           </div>
         </form>
@@ -127,42 +128,45 @@
     </div> <!-- .calc-grid -->
   </div> <!-- .container -->
 
-  <!-- Minimal local styles (won’t override your global styles) -->
+  <!-- Small local CSS to make the fragment look right (won't hurt if you also have global styles) -->
   <style>
+    /* fragment-local styles (safe to include) */
     .calculator-section .calc-grid { display:grid; grid-template-columns: 1fr 360px; gap:20px; max-width:920px; margin:0 auto; padding:0 8px; align-items:start; box-sizing:border-box; }
     @media (max-width:980px) { .calculator-section .calc-grid { grid-template-columns:1fr; } }
-    .form-card .field { margin-bottom:6px; }
-    .goal-options { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
-    .form-actions .btn { padding:8px 14px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
-    .btn-primary { background:#73000a; color:#fff; }
-    .btn-secondary { background:#fff; border:1px solid #ddd; color:#111; }
+    .card { background:#fff; border:1px solid #e6e6e6; border-radius:10px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
+    .calc-img { width:100%; height:200px; object-fit:cover; border-radius:8px; display:block; }
     .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
-    .result-box { background:#f3f3f3; border-radius:8px; padding:14px; text-align:center; }
+    .result-box { background:#f3f3f3; border-radius:8px; padding:12px; text-align:center; }
+    label{ display:block; font-weight:700; margin:6px 0 6px; }
+    input[type="number"], select { width:100%; padding:9px 10px; border:1px solid #ddd; border-radius:6px; box-sizing:border-box; }
+    .goal-options { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+    .form-actions .btn { padding:9px 14px; border-radius:8px; font-weight:700; border:none; cursor:pointer; }
+    .btn-primary { background:#73000a; color:#fff; }
+    .btn-secondary { background:#fff; color:#111; border:1px solid #d0d0d0; }
   </style>
 
-  <!-- Script: simple, robust, and safe to run multiple times -->
+  <!-- Script: safe (idempotent), prevents jumps, calculates and updates the result boxes -->
   <script>
     (function () {
-      // Avoid double-binding
+      // avoid binding twice if fragment is re-inserted
       if (window.__usc_calc_bound) return;
       window.__usc_calc_bound = true;
 
-      function toNum(v, fallback=0) {
-        const n = parseFloat(String(v || '').trim());
+      function toNum(val, fallback = 0) {
+        const n = parseFloat(String(val || '').trim());
         return Number.isFinite(n) ? n : fallback;
       }
 
-      function getGoalKey() {
-        const checked = document.querySelector('input[name="goal"]:checked');
-        if (checked && checked.value) return checked.value.toLowerCase();
-        return 'maintain';
+      function getGoal() {
+        const el = document.querySelector('input[name="goal"]:checked');
+        return el ? el.value : 'maintain';
       }
 
-      function updateDisplay(cal, protein, summary) {
+      function updateDisplay(calories, protein, summary) {
         const c = document.getElementById('user-calories');
         const p = document.getElementById('user-protein');
         const s = document.getElementById('user-summary');
-        if (c) c.textContent = "~" + Math.round(cal);
+        if (c) c.textContent = "~" + Math.round(calories);
         if (p) p.textContent = "~" + Math.round(protein) + "g";
         if (s) s.textContent = summary;
       }
@@ -173,9 +177,9 @@
         const age = toNum(document.getElementById('age')?.value, 20);
         const gender = (document.getElementById('gender')?.value || 'Male').toLowerCase();
         const activity = toNum(document.getElementById('activity')?.value, 1.55);
-        const goal = getGoalKey(); // 'lose'|'maintain'|'gain'
+        const goal = getGoal(); // lose / maintain / gain
 
-        // BMR (approx Mifflin/Harris style you used)
+        // BMR (your original style)
         let bmr;
         if (gender.startsWith('m')) {
           bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
@@ -185,32 +189,33 @@
 
         const maintenance = bmr * activity;
 
+        // apply sensible goal adjustments
         const goalMultipliers = { lose: 0.85, maintain: 1.00, gain: 1.15 };
         const proteinPerLb = { lose: 1.2, maintain: 1.1, gain: 1.4 };
 
         const mult = goalMultipliers[goal] ?? 1;
-        const protein = weight * (proteinPerLb[goal] ?? 1.1);
         const calories = maintenance * mult;
+        const protein = weight * (proteinPerLb[goal] ?? 1.1);
 
         const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goal}`;
         updateDisplay(calories, protein, summary);
       }
 
-      // attach handlers (form submit + separate button handlers)
-      const form = document.getElementById('calc-form');
+      // DOM elements
       const calcBtn = document.getElementById('calc-btn');
       const resetBtn = document.getElementById('reset-btn');
+      const form = document.getElementById('calc-form');
 
-      if (form) {
-        form.addEventListener('submit', function (e) {
+      if (calcBtn) {
+        calcBtn.addEventListener('click', function (e) {
           e.preventDefault();
           computeAndShow();
         });
       }
 
-      if (calcBtn) {
-        calcBtn.addEventListener('click', function (e) {
-          // in case the form isn't catching submit for any reason
+      // keep form submit safe (if someone hits Enter)
+      if (form) {
+        form.addEventListener('submit', function (e) {
           e.preventDefault();
           computeAndShow();
         });
@@ -219,19 +224,19 @@
       if (resetBtn) {
         resetBtn.addEventListener('click', function (e) {
           e.preventDefault();
-          // clear form & results
           if (form) form.reset();
           updateDisplay(0, 0, 'Fill out the form and click calculate to see your results.');
         });
       }
 
-      // Helpful: compute once to show defaults
+      // show defaults initially
       computeAndShow();
     })();
   </script>
 </section>
 </body>
 </html>
+
 
 
 
