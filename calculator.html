@@ -80,11 +80,9 @@
             </div>
 
             <div class="form-actions">
-              <!-- Calculate kept as submit so Enter works; script prevents default -->
-              <button type="submit" id="calculate-btn" class="btn btn-primary">Calculate</button>
-              <!-- Reset is type=button to avoid browser default form reset where we want to control behavior -->
-              <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
-            </div>
+  <button type="button" id="calculate-btn" class="btn btn-primary">Calculate</button>
+  <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
+</div>
           </form>
         </div>
 
@@ -119,75 +117,105 @@
   </div>
 
   <script>
-    (function () {
-      const form = document.getElementById('calc-form');
-      const calcBtn = document.getElementById('calculate-btn');
-      const resetBtn = document.getElementById('reset-btn');
+(function () {
+  // helper to safely read inputs (returns defaults if missing)
+  function readInputs() {
+    const weight = parseFloat(document.getElementById('weight')?.value) || 160;
+    const height = parseFloat(document.getElementById('height')?.value) || 5.10;
+    const age = parseFloat(document.getElementById('age')?.value) || 20;
+    const gender = (document.getElementById('gender')?.value) || 'Male';
+    const activity = parseFloat(document.getElementById('activity')?.value) || 1.55;
+    return { weight, height, age, gender, activity };
+  }
 
-      const userCaloriesEl = document.getElementById('user-calories');
-      const userProteinEl = document.getElementById('user-protein');
-      const userSummaryEl = document.getElementById('user-summary');
+  function calculateAndUpdate() {
+    const { weight, height, age, gender, activity } = readInputs();
 
-      function readInputs() {
-        const weight = parseFloat(document.getElementById('weight')?.value) || 160;
-        const height = parseFloat(document.getElementById('height')?.value) || 5.10;
-        const age = parseFloat(document.getElementById('age')?.value) || 20;
-        const gender = (document.getElementById('gender')?.value) || 'Male';
-        const activity = parseFloat(document.getElementById('activity')?.value) || 1.55;
-        return { weight, height, age, gender, activity };
-      }
+    let bmr;
+    if (String(gender).toLowerCase().startsWith('m')) {
+      bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+    } else {
+      bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+    }
 
-      function calculateAndUpdate() {
-        const { weight, height, age, gender, activity } = readInputs();
+    const calories = Math.round(bmr * activity);
+    const protein = Math.round(weight * 1.1);
+    const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
 
-        let bmr;
-        if (String(gender).toLowerCase().startsWith('m')) {
-          bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-        } else {
-          bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-        }
+    const userCaloriesEl = document.getElementById('user-calories');
+    const userProteinEl = document.getElementById('user-protein');
+    const userSummaryEl = document.getElementById('user-summary');
 
-        const calories = Math.round(bmr * activity);
-        const protein = Math.round(weight * 1.1);
-        const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+    if (userCaloriesEl) userCaloriesEl.textContent = "~" + calories;
+    if (userProteinEl) userProteinEl.textContent = "~" + protein + "g";
+    if (userSummaryEl) userSummaryEl.textContent = summary;
+  }
 
-        userCaloriesEl.textContent = "~" + calories;
-        userProteinEl.textContent = "~" + protein + "g";
-        userSummaryEl.textContent = summary;
-      }
+  function doReset() {
+    const form = document.getElementById('calc-form');
+    if (form) form.reset();
 
-      function doReset() {
-        form.reset();
-        userCaloriesEl.textContent = "0";
-        userProteinEl.textContent = "0g";
-        userSummaryEl.textContent = "Fill out the form and click calculate to see your results.";
-      }
+    const userCaloriesEl = document.getElementById('user-calories');
+    const userProteinEl = document.getElementById('user-protein');
+    const userSummaryEl = document.getElementById('user-summary');
 
-      // Attach handlers
-      if (form) {
-        form.addEventListener('submit', function (ev) {
-          ev.preventDefault(); // stop form submit / jump
-          calculateAndUpdate();
-        });
-      }
+    if (userCaloriesEl) userCaloriesEl.textContent = "0";
+    if (userProteinEl) userProteinEl.textContent = "0g";
+    if (userSummaryEl) userSummaryEl.textContent = "Fill out the form and click calculate to see your results.";
+  }
 
-      if (calcBtn) {
-        calcBtn.addEventListener('click', function (ev) {
-          ev.preventDefault();
-          calculateAndUpdate();
-        });
-      }
+  // Primary: click handler on the Calculate button (works even if the form isn't present when script ran)
+  document.addEventListener('click', function (ev) {
+    const btn = ev.target.closest && ev.target.closest('#calculate-btn');
+    if (btn) {
+      ev.preventDefault();
+      calculateAndUpdate();
+    }
+    const reset = ev.target.closest && ev.target.closest('#reset-btn');
+    if (reset) {
+      ev.preventDefault();
+      doReset();
+    }
+  });
 
-      if (resetBtn) {
-        resetBtn.addEventListener('click', function (ev) {
-          ev.preventDefault();
-          doReset();
-        });
-      }
-    })();
-  </script>
+  // Secondary: delegated submit handler (catches native submits if anything triggers them)
+  document.addEventListener('submit', function (ev) {
+    const f = ev.target;
+    if (f && f.id === 'calc-form') {
+      ev.preventDefault();
+      calculateAndUpdate();
+    }
+  });
+
+  // Defensive: if form and buttons already exist and you want direct handlers, attach them
+  // (this is optional; the above delegated handlers are usually enough).
+  function attachDirectHandlersIfReady() {
+    const calcBtn = document.getElementById('calculate-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const form = document.getElementById('calc-form');
+
+    if (calcBtn && !calcBtn._bound) {
+      calcBtn.addEventListener('click', function (e) { e.preventDefault(); calculateAndUpdate(); });
+      calcBtn._bound = true;
+    }
+    if (resetBtn && !resetBtn._bound) {
+      resetBtn.addEventListener('click', function (e) { e.preventDefault(); doReset(); });
+      resetBtn._bound = true;
+    }
+    if (form && !form._bound) {
+      form.addEventListener('submit', function (e) { e.preventDefault(); calculateAndUpdate(); });
+      form._bound = true;
+    }
+  }
+
+  // Try to attach direct handlers now and again shortly after in case fragment loads late
+  attachDirectHandlersIfReady();
+  setTimeout(attachDirectHandlersIfReady, 300);
+})();
+</script>
 </body>
 </html>
+
 
 
 
