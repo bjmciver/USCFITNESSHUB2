@@ -87,25 +87,24 @@
     margin: 0 auto 2rem;
   }
 
-  /* FORCE 2x2 layout on desktop */
+  /* Force 2x2 grid */
   .nutrition-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* exactly 2 columns */
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
-    align-items: start;                     /* top-align cards */
-    justify-items: stretch;
   }
 
-  /* make cards stretch vertically so they look like even boxes */
-  .nutrition-grid .card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    box-sizing: border-box;
-    padding: 20px;
+  @media (max-width: 900px) {
+    .nutrition-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 12px;
+    padding: 20px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
 
@@ -114,15 +113,11 @@
     color: #222;
   }
 
-  /* keep the hero/photo card image natural */
   .crop-img {
     width: 100%;
-    height: auto;            /* allow natural height */
-    max-height: 300px;      /* caps height so cards match visually */
+    height: 250px;
     object-fit: cover;
     border-radius: 10px;
-    display: block;
-    margin-bottom: 12px;
   }
 
   .grocery-grid {
@@ -159,18 +154,8 @@
     margin: 6px 0;
     font-size: 0.95rem;
   }
-
-  /* Responsive: single column for narrow screens */
-  @media (max-width: 900px) {
-    .nutrition-grid {
-      grid-template-columns: 1fr;
-    }
-    .grocery-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .crop-img { max-height: none; height: 220px; }
-  }
 </style>
 
 </section>
+
 
