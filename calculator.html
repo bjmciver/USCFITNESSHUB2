@@ -189,51 +189,55 @@
       </div> <!-- .calc-grid -->
     </div> <!-- .container -->
 
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('calc-form');
-        const resetBtn = document.getElementById('reset-btn');
+   <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("calc-form");
+  const resetBtn = document.getElementById("reset-btn");
 
-        function updateResults(calories, protein, summary) {
-          document.getElementById('user-calories').textContent = "~" + calories;
-          document.getElementById('user-protein').textContent = "~" + protein + "g";
-          document.getElementById('user-summary').textContent = summary;
-        }
+  function updateResults(calories, protein, summary) {
+    document.getElementById("user-calories").textContent = "~" + calories;
+    document.getElementById("user-protein").textContent = "~" + protein + "g";
+    document.getElementById("user-summary").textContent = summary;
+  }
 
-        if (form) {
-          form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const weight = parseFloat(document.getElementById('weight').value) || 160;
-            const height = parseFloat(document.getElementById('height').value) || 5.10;
-            const age = parseFloat(document.getElementById('age').value) || 20;
-            const gender = document.getElementById('gender').value;
-            const activity = parseFloat(document.getElementById('activity').value) || 1.55;
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault(); // prevent page reload
 
-            let bmr;
-            if (gender === "Male") {
-              bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
-            } else {
-              bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
-            }
+      const weight = parseFloat(document.getElementById("weight").value) || 160;
+      const height = parseFloat(document.getElementById("height").value) || 5.10;
+      const age = parseFloat(document.getElementById("age").value) || 20;
+      const gender = document.getElementById("gender").value;
+      const activity = parseFloat(document.getElementById("activity").value) || 1.55;
 
-            const calories = Math.round(bmr * activity);
-            const protein = Math.round(weight * 1.1);
-            const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+      // BMR (simplified Harris-Benedict style)
+      let bmr;
+      if (gender === "Male") {
+        bmr = 66 + (6.23 * weight) + (12.7 * (height * 12)) - (6.8 * age);
+      } else {
+        bmr = 655 + (4.35 * weight) + (4.7 * (height * 12)) - (4.7 * age);
+      }
 
-            updateResults(calories, protein, summary);
-          });
-        }
+      const calories = Math.round(bmr * activity);
+      const protein = Math.round(weight * 1.1);
 
-        if (resetBtn) {
-          resetBtn.addEventListener('click', function() {
-            updateResults(0, 0, "Fill out the form and click calculate to see your results.");
-          });
-        }
-      });
-    </script>
+      const summary = `Based on your info: ${age} years old, ${height} ft, ${weight} lbs, activity factor ${activity}`;
+
+      updateResults(calories, protein, summary);
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      updateResults(0, 0, "Fill out the form and click calculate to see your results.");
+    });
+  }
+});
+</script>
   </section>
 </body>
 </html>
+
 
 
 
