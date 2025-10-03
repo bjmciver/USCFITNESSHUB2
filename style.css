@@ -371,73 +371,45 @@ h2, h3, h4 { color:#73000a; margin-top:0; }
 #home .two-col {
   grid-template-columns: 1.1fr 0.9fr;  /* makes text take ~55%, image ~45% */
 }
-/* --- Footer color & layout fixes (place near the end of styles.css) --- */
-footer.site-footer,
-footer, /* keep compatibility if footer has no class */
-#footer { 
-  background: #0b0b0b;        /* deep black background */
-  color: #ffffff;             /* copy text white */
-  padding: 28px 16px;
+/* Force footer background & text color */
+footer, #footer, .site-footer {
+  background-color: #111;   /* solid dark background */
+  color: #fff;              /* all text inside turns white */
+  padding: 2rem 1rem;
   text-align: center;
-  border-top: 4px solid #73000a; /* subtle accent band (dark red) */
-}
-
-/* Footer container to keep content centered / constrained */
-footer .container,
-#footer > div {
-  max-width: 1100px;
-  margin: 0 auto;
 }
 
 /* Footer links */
-footer a,
-#footer a {
-  color: #e6e6e6;             /* light grey for links */
+footer a {
+  color: #eee;
   text-decoration: none;
   margin: 0 10px;
   font-weight: 600;
 }
-footer a:hover,
-#footer a:hover {
-  color: #ffffff;
+footer a:hover {
+  color: #fff;
   text-decoration: underline;
 }
 
-/* Secondary links (less prominent) */
-footer .footer-nav a {
-  color: #d0cfcf;
-  font-weight: 500;
-}
-footer .footer-nav a:hover { color: #fff; }
-
-/* Small meta text */
+/* Footer paragraph text */
 footer p {
-  margin: 8px 0;
-  color: #dcdcdc;
-  font-size: 0.95rem;
+  color: #ccc;
+  margin: 0.5rem 0;
 }
 
 /* Back-to-top button */
-.back-to-top {
+footer .back-to-top {
   display: inline-block;
   margin-top: 12px;
   padding: 10px 18px;
-  background: #73000a;        /* university accent */
+  background: #73000a; /* school accent red */
   color: #fff;
   border-radius: 8px;
+  font-weight: bold;
   text-decoration: none;
-  font-weight: 700;
-  border: none;               /* if it's a button element */
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
-.back-to-top:hover {
-  background: #8f000f;
-  transform: translateY(-1px);
+footer .back-to-top:hover {
+  background: #900;  /* slightly lighter red on hover */
 }
 
-/* Accessibility: ensure sufficient contrast on small screens */
-@media (max-width:480px) {
-  footer p, footer a { font-size: 0.95rem; }
-  .back-to-top { padding: 10px 14px; }
-}
 
