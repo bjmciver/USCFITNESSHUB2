@@ -128,8 +128,8 @@
     </div> <!-- .calc-grid -->
   </div> <!-- .container -->
 
-  <!-- Minimal local styles -->
   <style>
+    /* minimal local CSS (won't interfere with global unless overwritten) */
     .calculator-section .calc-grid { display:grid; grid-template-columns: 1fr 360px; gap:20px; max-width:920px; margin:0 auto; padding:0 8px; align-items:start; box-sizing:border-box; }
     @media (max-width:980px) { .calculator-section .calc-grid { grid-template-columns:1fr; } }
     .form-card .field { margin-bottom:6px; }
@@ -141,19 +141,34 @@
     .result-box { background:#f3f3f3; border-radius:8px; padding:14px; text-align:center; }
   </style>
 
-  <!-- Scoped, idempotent script: queries scoped to this section to avoid collisions -->
   <script>
     (function () {
-      // guard so the script isn't bound twice
+      // One-time guard (safe even if fragment is re-inserted)
       if (window.__usc_calc_scoped_bound) return;
       window.__usc_calc_scoped_bound = true;
 
       const root = document.getElementById('calculator');
-      if (!root) return; // nothing to do
+      if (!root) return;
 
-      // helpers that operate inside the root only
+      // safety: ensure form cannot navigate by normal submit
+      const form = root.querySelector('#calc-form');
+      if (form) {
+        try {
+          // block any native navigation if enter/submit occurs
+          form.action = "javascript:void(0);";
+          form.onsubmit = function (e) {
+            if (e && e.preventDefault) e.preventDefault();
+            // call compute if user pressed Enter
+            computeAndShow();
+            return false;
+          };
+        } catch (err) {
+          // ignore — defensive
+        }
+      }
+
+      // scoped selectors
       const $ = (sel) => root.querySelector(sel);
-      const $all = (sel) => Array.from(root.querySelectorAll(sel));
 
       function toNum(v, fallback = 0) {
         const n = parseFloat(String(v || '').trim());
@@ -180,7 +195,7 @@
         const age = toNum($('#age')?.value, 20);
         const gender = ($('#gender')?.value || 'Male').toLowerCase();
         const activity = toNum($('#activity')?.value, 1.55);
-        const goal = getGoalKey(); // lose / maintain / gain
+        const goal = getGoalKey();
 
         let bmr;
         if (gender.startsWith('m')) {
@@ -190,33 +205,23 @@
         }
 
         const maintenance = bmr * activity;
-
         const goalMultipliers = { lose: 0.85, maintain: 1.00, gain: 1.15 };
         const proteinPerLb = { lose: 1.2, maintain: 1.1, gain: 1.4 };
 
         const mult = goalMultipliers[goal] ?? 1;
         const calories = maintenance * mult;
         const protein = weight * (proteinPerLb[goal] ?? 1.1);
-
         const summary = `Based on your info: ${age} y, ${height} ft, ${weight} lbs, activity ${activity} — goal: ${goal}`;
+
         updateDisplay(calories, protein, summary);
       }
 
-      // bind buttons inside root
+      // bind UI controls inside fragment
       const calcBtn = $('#calc-btn');
       const resetBtn = $('#reset-btn');
-      const form = $('#calc-form');
 
       if (calcBtn) {
         calcBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          computeAndShow();
-        });
-      }
-
-      // keep form submit safe if user presses Enter
-      if (form) {
-        form.addEventListener('submit', function (e) {
           e.preventDefault();
           computeAndShow();
         });
@@ -230,14 +235,11 @@
         });
       }
 
-      // show defaults immediately
+      // compute initial defaults so user sees values right away
       computeAndShow();
     })();
   </script>
 </section>
-</body>
-</html>
-
 
 
 
