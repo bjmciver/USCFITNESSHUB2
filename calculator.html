@@ -82,6 +82,20 @@
       .form-actions { flex-direction: column; }
       .form-actions .btn { width:100%; }
     }
+    /* === center calculator heading + subtitle (place at end of calculator fragment <style>) === */
+#calculator .container > h2,
+#calculator .container > p.section-subtitle,
+#calculator h2,
+#calculator .section-subtitle,
+.calculator-section h2,
+.calculator-section .section-subtitle {
+  display: block !important;
+  width: 100% !important;
+  max-width: 880px !important;   /* keeps the text from stretching too wide — tweak if needed */
+  margin: 0 auto 12px !important; /* centers and gives small gap under heading */
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
   </style>
 </head>
 <body>
@@ -218,6 +232,7 @@
   </section>
 </body>
 </html>
+
 
 
 
