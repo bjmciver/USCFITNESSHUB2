@@ -112,96 +112,158 @@
     </div>
   </section>
 
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    function isValidEmail(value) {
-      return /^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$/i.test(value.trim());
-    }
+ <script>
+(function () {
+  // Guard to avoid double-binding if SPA mounts fragment multiple times
+  if (window.__usc_forms_fragment_bound) return;
+  window.__usc_forms_fragment_bound = true;
 
-    function showError(el, msg) {
+  // Find fragment root and forms
+  const root = document.getElementById('forms') || document.querySelector('section');
+  if (!root) return;
+
+  // Utility selectors scoped to this fragment
+  const $ = (sel) => root.querySelector(sel);
+  const $$ = (sel) => Array.from(root.querySelectorAll(sel));
+
+  // Helper: show inline error after the field
+  function showError(input, message) {
+    clearError(input);
+    const span = document.createElement('span');
+    span.className = 'error-message';
+    span.textContent = message;
+    input.insertAdjacentElement('afterend', span);
+    input.classList.add('invalid');
+  }
+
+  function clearError(input) {
+    if (!input) return;
+    input.classList.remove('invalid');
+    const nxt = input.nextElementSibling;
+    if (nxt && nxt.classList.contains('error-message')) nxt.remove();
+  }
+
+  // Validate a single form element using HTML validity first (pattern/minlength/etc),
+  // fall back to a custom radio-group check when needed.
+  function validateForm(form) {
+    let valid = true;
+
+    // Use HTML5 input constraints where possible
+    const requiredEls = Array.from(form.querySelectorAll('[required]'));
+    requiredEls.forEach(el => {
       clearError(el);
-      const error = document.createElement('span');
-      error.className = 'error-message';
-      error.textContent = msg;
-      el.insertAdjacentElement('afterend', error);
-      el.classList.add('invalid');
-    }
-
-    function clearError(el) {
-      el.classList.remove('invalid');
-      const next = el.nextElementSibling;
-      if (next && next.classList.contains('error-message')) next.remove();
-    }
-
-    function validateForm(form) {
-      let valid = true;
-
-      // check required fields
-      form.querySelectorAll('[required]').forEach(input => {
-        clearError(input);
-        const val = input.value.trim();
-        if (!val) {
-          showError(input, 'This field is required');
-          valid = false;
-        } else if (input.type === 'email' && !isValidEmail(val)) {
-          showError(input, 'Please enter a valid email');
-          valid = false;
-        }
-      });
-
-      // radio check for fitness form
-      if (form.id === 'fitness-assessment-form') {
-        const radios = form.querySelectorAll('input[name="goal"]');
-        const anyChecked = Array.from(radios).some(r => r.checked);
-        const existing = form.querySelector('.error-message--radio');
-        if (existing) existing.remove();
-        if (!anyChecked) {
-          const err = document.createElement('span');
-          err.className = 'error-message error-message--radio';
-          err.textContent = 'Please select a goal';
-          radios[radios.length - 1].insertAdjacentElement('afterend', err);
-          valid = false;
-        }
+      // For radios, skip here (we'll handle radio groups separately)
+      if (el.type === 'radio') return;
+      // If the browser reports an invalid constraint, use the browser message if available
+      if (!el.checkValidity()) {
+        const msg = el.title || el.validationMessage || 'Invalid value';
+        showError(el, msg);
+        valid = false;
       }
-      return valid;
-    }
+    });
 
-    document.querySelectorAll('form').forEach(form => {
-      form.setAttribute('novalidate', 'novalidate');
+    // Radio groups: check each distinct name where radio inputs exist inside this form
+    const radioNames = new Set(Array.from(form.querySelectorAll('input[type="radio"]')).map(r => r.name));
+    radioNames.forEach(name => {
+      const radios = Array.from(form.querySelectorAll(`input[type="radio"][name="${name}"]`));
+      if (!radios.length) return;
+      // If any radio has required attribute then this group must have a selection
+      const groupRequired = radios.some(r => r.hasAttribute('required'));
+      if (!groupRequired) return; // only enforce if author marked group as required
+      const anyChecked = radios.some(r => r.checked);
+      // remove existing group error
+      radios.forEach(r => {
+        const existing = r.parentNode.querySelector('.error-message--radio');
+        if (existing) existing.remove();
+      });
+      if (!anyChecked) {
+        const err = document.createElement('span');
+        err.className = 'error-message error-message--radio';
+        err.textContent = 'Please select an option';
+        // append after last radio element
+        radios[radios.length - 1].insertAdjacentElement('afterend', err);
+        valid = false;
+      }
+    });
 
-      form.addEventListener('submit', e => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
+    return valid;
+  }
 
-        if (!validateForm(form)) return;
+  // Attach handlers to forms inside the fragment
+  $$( 'form' ).forEach(form => {
+    // We'll manage validation UI ourselves
+    form.setAttribute('novalidate','novalidate');
 
-        alert('✅ Form submitted successfully!');
-        form.reset();
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // clear any radio-group errors before validating
+      form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
+
+      const ok = validateForm(form);
+      if (!ok) {
+        // focus first invalid element for better UX
+        const firstInvalid = form.querySelector('.invalid, .error-message--radio');
+        if (firstInvalid) {
+          // if an error-message element is selected, focus previous input
+          if (firstInvalid.classList && firstInvalid.classList.contains('error-message--radio')) {
+            const prev = firstInvalid.previousElementSibling;
+            if (prev && prev.focus) prev.focus();
+          } else if (firstInvalid.focus) {
+            firstInvalid.focus();
+          }
+        }
+        return;
+      }
+
+      // If you want to submit normally uncomment the next line:
+      // form.submit();
+
+      // Default action: replace this with AJAX/post to backend
+      // For now show a confirmation and reset
+      alert('Form passed validation — replace with your submit logic.');
+      form.reset();
+      // clean up errors
+      form.querySelectorAll('.error-message').forEach(n => n.remove());
+      form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
+    });
+
+    // Live-clear errors while typing/choosing
+    form.addEventListener('input', (ev) => {
+      const t = ev.target;
+      if (!t) return;
+      if (t.type === 'radio') {
+        // clear radio group messages for that name
+        const radios = Array.from(form.querySelectorAll(`input[type="radio"][name="${t.name}"]`));
+        radios.forEach(r => {
+          const existing = r.parentNode.querySelector('.error-message--radio');
+          if (existing) existing.remove();
+        });
+        return;
+      }
+      if (t.matches('[required], input[type="email"], textarea, input')) {
+        clearError(t);
+      }
+    });
+
+    // Clear errors on reset
+    form.addEventListener('reset', () => {
+      setTimeout(() => {
         form.querySelectorAll('.error-message').forEach(n => n.remove());
         form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
-      });
-
-      form.addEventListener('input', e => {
-        if (e.target.matches('[required], input[type="email"], textarea')) {
-          clearError(e.target);
-        }
-        if (e.target.type === 'radio') {
-          form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
-        }
-      });
-
-      form.addEventListener('reset', () => {
-        setTimeout(() => {
-          form.querySelectorAll('.error-message').forEach(n => n.remove());
-          form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
-        }, 0);
-      });
+      }, 0);
     });
   });
-  </script>
+
+  // Optional: expose a global validate function if you want central control
+  window.__usc_validate_form = function(form) { return validateForm(form); };
+
+})();
+</script>
 </body>
 </html>
+
 
 
 
