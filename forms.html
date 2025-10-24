@@ -57,7 +57,65 @@
     </div>
   </div>
 </section>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Utility function for validation feedback
+  function showError(input, message) {
+    let error = input.nextElementSibling;
+    if (!error || !error.classList.contains('error-message')) {
+      error = document.createElement('span');
+      error.className = 'error-message';
+      input.after(error);
+    }
+    error.textContent = message;
+    input.classList.add('invalid');
+  }
+
+  function clearError(input) {
+    const error = input.nextElementSibling;
+    if (error && error.classList.contains('error-message')) {
+      error.textContent = '';
+    }
+    input.classList.remove('invalid');
+  }
+
+  // Generic validation function
+  function validateForm(form) {
+    let valid = true;
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(input => {
+      clearError(input);
+      if (!input.value.trim()) {
+        showError(input, 'This field is required');
+        valid = false;
+      } else if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+        showError(input, 'Enter a valid email');
+        valid = false;
+      }
+    });
+    return valid;
+  }
+
+  // Attach to each form
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (validateForm(form)) {
+        alert('Form submitted successfully!');
+        form.reset();
+      }
+    });
+
+    form.addEventListener('input', function (e) {
+      if (e.target.matches('[required]')) {
+        clearError(e.target);
+      }
+    });
+  });
+});
+</script>
 </body>
 
 </html>
+
 
