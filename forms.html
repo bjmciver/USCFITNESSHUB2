@@ -57,10 +57,23 @@
     </div>
   </div>
 </section>
-  
+  <script>
+console.log('>> test-submit-script loaded');
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', e => {
+      console.log('submit event fired for form:', form.id || form);
+      e.preventDefault();
+      e.stopPropagation();
+      alert('JS intercepted submit — page will NOT refresh');
+    });
+  });
+});
+</script>
 </body>
 
 </html>
+
 
 
 
