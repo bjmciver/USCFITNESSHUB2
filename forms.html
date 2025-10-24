@@ -58,60 +58,141 @@
   </div>
 </section>
   <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
-  function showError(input, message) {
-    let error = input.parentNode.querySelector('.error-message');
-    if (!error) {
-      error = document.createElement('span');
-      error.className = 'error-message';
-      input.insertAdjacentElement('afterend', error);
-    }
-    error.textContent = message;
-    input.classList.add('invalid');
+  // Strict email: must contain "@" and end with .com or .net
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.(com|net)$/i.test(value.trim());
   }
 
-  function clearError(input) {
-    input.classList.remove('invalid');
-    const error = input.parentNode.querySelector('.error-message');
-    if (error) error.remove();
+  function showError(el, msg) {
+    clearError(el);
+    const error = document.createElement('span');
+    error.className = 'error-message';
+    error.textContent = msg;
+    el.insertAdjacentElement('afterend', error);
+    el.classList.add('invalid');
   }
 
+  function clearError(el) {
+    el.classList.remove('invalid');
+    const next = el.nextElementSibling;
+    if (next && next.classList.contains('error-message')) next.remove();
+  }
+
+  // Validate required text/email fields and specific rules
   function validateForm(form) {
     let valid = true;
-    const inputs = form.querySelectorAll('[required]');
-    inputs.forEach(input => {
+
+    // Required inputs (text, email, textarea)
+    form.querySelectorAll('[required]').forEach(input => {
       clearError(input);
-      if (!input.value.trim()) {
+      const val = input.value || '';
+      if (!val.trim()) {
         showError(input, 'This field is required');
         valid = false;
-      } else if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
-        showError(input, 'Please enter a valid email');
+        return;
+      }
+      if (input.type === 'email' && !isValidEmail(val)) {
+        showError(input, 'Please enter a valid email (must contain @ and end with .com or .net)');
         valid = false;
       }
     });
+
+    // Example: check radio group "goal" in fitness form (if present)
+    const radioGroupsToCheck = [
+      { name: 'goal', formId: 'fitness-assessment-form' } // add more if needed
+    ];
+    radioGroupsToCheck.forEach(group => {
+      // only check if this validation applies to the current form
+      if (form.id === group.formId) {
+        const radios = form.querySelectorAll(`input[type="radio"][name="${group.name}"]`);
+        if (radios.length) {
+          const anyChecked = Array.from(radios).some(r => r.checked);
+          // place error after last radio label / container
+          const lastRadio = radios[radios.length - 1];
+          // remove any previous radio error
+          const existing = lastRadio.parentNode.querySelector('.error-message--radio');
+          if (existing) existing.remove();
+          if (!anyChecked) {
+            const err = document.createElement('span');
+            err.className = 'error-message error-message--radio';
+            err.textContent = 'Please select a goal';
+            lastRadio.insertAdjacentElement('afterend', err);
+            valid = false;
+          }
+        }
+      }
+    });
+
     return valid;
   }
 
+  // Attach handlers to all forms
   document.querySelectorAll('form').forEach(form => {
+    // Ensure native validation won't short-circuit (should be in your markup already)
+    form.setAttribute('novalidate', 'novalidate');
+
     form.addEventListener('submit', function (e) {
+      // Strong prevention of default navigation/refresh
       e.preventDefault();
-      if (validateForm(form)) {
-        alert('✅ Form submitted successfully!');
-        form.reset();
+      e.stopPropagation();
+
+      // Clear any existing radio error messages in this form
+      form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
+
+      const ok = validateForm(form);
+      if (!ok) {
+        // keep page as-is so user can fix errors
+        return;
+      }
+
+      // If you want to actually submit, do it here (AJAX or real submit)
+      // Example: basic success behavior without navigating away:
+      alert('✅ Form passed validation — replace this with your submit logic.');
+      form.reset();
+      // clear leftover inline errors after reset
+      form.querySelectorAll('.error-message').forEach(n => n.remove());
+      form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
+    });
+
+    // Clear errors when user types
+    form.addEventListener('input', function (e) {
+      if (!e.target) return;
+      // for radio clicks, clear radio error messages for that group
+      if (e.target.type === 'radio') {
+        const name = e.target.name;
+        const lastRadio = form.querySelectorAll(`input[type="radio"][name="${name}"]`);
+        if (lastRadio.length) {
+          form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
+        }
+        return;
+      }
+      if (e.target.matches('[required], input[type="email"], textarea')) {
+        clearError(e.target);
       }
     });
 
-    form.addEventListener('input', function (e) {
-      if (e.target.matches('[required]')) clearError(e.target);
+    // When reset is pressed, also clear error messages (protects from leftover errors)
+    form.addEventListener('reset', function () {
+      // run in next tick so native reset finishes
+      setTimeout(() => {
+        form.querySelectorAll('.error-message').forEach(n => n.remove());
+        form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
+      }, 0);
     });
   });
 
+  // Helpful debug note: if a form element is named "submit" it can break JS form.submit references.
+  // If you still see odd behavior, open the console and run:
+  // document.querySelectorAll('[name="submit"]').length
+  // If >0, consider renaming that element (e.g., name="submitBtn").
 });
 </script>
 </body>
 
 </html>
+
 
 
 
