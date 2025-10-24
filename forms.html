@@ -2,22 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Forms — debug build</title>
+  <title>Forms — single-file</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin: 18px; color:#222 }
+    /* basic layout + look */
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin: 18px; color:#222; background:#f7f8fb; }
     .container { max-width: 920px; margin: 0 auto; }
+    h2 { margin-bottom: 12px; }
     .debug { background:#111; color:#0f0; padding:10px; border-radius:6px; font-family: monospace; margin-bottom:16px; white-space:pre-wrap; max-height:120px; overflow:auto }
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-    .card { padding:14px; border:1px solid #eee; border-radius:8px; background:#fff; }
+    .card { padding:14px; border:1px solid #e6e9ef; border-radius:8px; background:#fff; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
     label { display:block; margin-top:10px; font-weight:600; }
-    input, textarea { width:100%; padding:8px; margin-top:6px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; }
+    input, textarea { width:100%; padding:9px; margin-top:6px; box-sizing:border-box; border:1px solid #cfd6e3; border-radius:6px; font-size:0.95rem; }
     .form-actions { margin-top:12px; display:flex; gap:8px; }
-    .btn { padding:8px 12px; border-radius:6px; border:1px solid #ccc; background:#f4f4f4; cursor:pointer; }
+    .btn { padding:8px 12px; border-radius:6px; border:1px solid #cfd6e3; background:#f4f6fb; cursor:pointer; }
     .btn-primary { background:#0575e6; color:#fff; border-color:rgba(0,0,0,0.06); }
     .error-message { color:#d9534f; font-size:0.95rem; margin-top:6px; display:block; }
     input.invalid, textarea.invalid { border:2px solid #d9534f; background:#fff5f5; }
-    .goal-options label { display:inline-block; margin-right:10px; font-weight:400; }
+    .goal-options label { display:inline-block; margin-right:12px; font-weight:400; }
     @media (max-width:700px){ .two-col{grid-template-columns:1fr} }
   </style>
 </head>
@@ -25,7 +27,7 @@
   <div class="container">
     <div id="debugPanel" class="debug">debug: loading…</div>
 
-    <h2>Feedback & Assessment Forms (debug)</h2>
+    <h2>Feedback & Assessment Forms</h2>
 
     <div class="two-col">
       <!-- Fitness Assessment -->
@@ -75,20 +77,12 @@
   </div>
 
 <script>
-/*
-  Debuggable validator script
-  - Shows on-page debug logs in #debugPanel
-  - Also logs to console
-  - Strict email: must have @ and end with .com or .net
-*/
-
 (function () {
   const dp = document.getElementById('debugPanel');
   function dbg(...args) {
     const txt = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
     console.log('validator:', txt);
     dp.textContent += '\n' + txt;
-    // keep scroll at bottom
     dp.scrollTop = dp.scrollHeight;
   }
 
@@ -158,11 +152,8 @@
       return valid;
     }
 
-    // Attach handlers
     document.querySelectorAll('form').forEach(form => {
       dbg('attaching to form', form.id);
-
-      // ensure novalidate set (avoid native browser UI)
       form.setAttribute('novalidate', 'novalidate');
 
       form.addEventListener('submit', function (e) {
@@ -170,7 +161,6 @@
         e.preventDefault();
         e.stopPropagation();
 
-        // clear previous radio errors
         form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
 
         const ok = validateForm(form);
@@ -182,8 +172,7 @@
         }
 
         dbg('validation passed for', form.id);
-        // success action (no navigation). Replace with your AJAX here.
-        alert('✅ Form passed validation (debug). Replace with submit logic.');
+        alert('✅ Form passed validation — replace with submit logic.');
         form.reset();
         form.querySelectorAll('.error-message').forEach(n => n.remove());
         form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
@@ -221,14 +210,12 @@
       }
     });
 
-    dbg('validator ready — try submitting a form. Check console and debug panel above.');
+    dbg('validator ready — try submitting a form. Check debug panel and console.');
   });
 })();
 </script>
 </body>
 </html>
-
-
 
 
 
