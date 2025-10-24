@@ -217,10 +217,7 @@
         return;
       }
 
-      // If you want to submit normally uncomment the next line:
-      // form.submit();
-
-      // Default action: replace this with AJAX/post to backend
+  
       // For now show a confirmation and reset
       alert('Form passed validation — replace with your submit logic.');
       form.reset();
@@ -255,14 +252,15 @@
       }, 0);
     });
   });
-
-  // Optional: expose a global validate function if you want central control
+  
+  // expose a global validate function if you want central control
   window.__usc_validate_form = function(form) { return validateForm(form); };
 
 })();
 </script>
 </body>
 </html>
+
 
 
 
