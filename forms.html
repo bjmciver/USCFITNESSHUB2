@@ -4,75 +4,169 @@
   <meta charset="UTF-8">
   <title>Forms</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .error-message {
+      color: #d9534f;
+      font-size: 0.9em;
+      margin-top: 4px;
+      display: block;
+    }
+    input.invalid, textarea.invalid {
+      border: 2px solid #d9534f;
+      background-color: #fef2f2;
+    }
+  </style>
 </head>
 <body>
   <section id="forms" class="section">
-  <div class="container">
-    <h2 class="section-title">Feedback & Assessment Forms</h2>
+    <div class="container">
+      <h2 class="section-title">Feedback & Assessment Forms</h2>
 
-    <div class="two-col">
-      <!-- Fitness Assessment -->
-      <div class="card">
-        <h3>Fitness Assessment</h3>
-        <form id="fitness-assessment-form" novalidate>
-          <label for="fa-name">Name *</label>
-          <input id="fa-name" name="name" type="text" required>
+      <div class="two-col">
+        <!-- Fitness Assessment -->
+        <div class="card">
+          <h3>Fitness Assessment</h3>
+          <form id="fitness-assessment-form" novalidate>
+            <label for="fa-name">Name *</label>
+            <input id="fa-name" name="name" type="text" required>
 
-          <label for="fa-email">Email *</label>
-          <input id="fa-email" name="email" type="email" required>
+            <label for="fa-email">Email *</label>
+            <input id="fa-email" name="email" type="email" required>
 
-          <label>Goal</label>
-<div class="goal-options">
-  <label><input type="radio" name="goal" value="lose"> Lose Weight</label>
-  <label><input type="radio" name="goal" value="maintain" checked> Maintain</label>
-  <label><input type="radio" name="goal" value="gain"> Gain</label>
-</div>
+            <label>Goal</label>
+            <div class="goal-options">
+              <label><input type="radio" name="goal" value="lose"> Lose Weight</label>
+              <label><input type="radio" name="goal" value="maintain" checked> Maintain</label>
+              <label><input type="radio" name="goal" value="gain"> Gain</label>
+            </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn">Reset</button>
-          </div>
-        </form>
-      </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="reset" class="btn">Reset</button>
+            </div>
+          </form>
+        </div>
 
-      <!-- Feedback Form -->
-      <div class="card">
-        <h3>Feedback Form</h3>
-        <form id="feedback-form" novalidate>
-          <label for="fb-name">Name *</label>
-          <input id="fb-name" name="name" type="text" required>
+        <!-- Feedback Form -->
+        <div class="card">
+          <h3>Feedback Form</h3>
+          <form id="feedback-form" novalidate>
+            <label for="fb-name">Name *</label>
+            <input id="fb-name" name="name" type="text" required>
 
-          <label for="fb-email">Email *</label>
-          <input id="fb-email" name="email" type="email" required>
+            <label for="fb-email">Email *</label>
+            <input id="fb-email" name="email" type="email" required>
 
-          <label for="fb-comments">Comments</label>
-          <textarea id="fb-comments" name="comments" rows="6"></textarea>
+            <label for="fb-comments">Comments</label>
+            <textarea id="fb-comments" name="comments" rows="6"></textarea>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button type="reset" class="btn">Reset</button>
-          </div>
-        </form>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="reset" class="btn">Reset</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
   <script>
-console.log('>> test-submit-script loaded');
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', e => {
-      console.log('submit event fired for form:', form.id || form);
-      e.preventDefault();
-      e.stopPropagation();
-      alert('JS intercepted submit — page will NOT refresh');
+  document.addEventListener('DOMContentLoaded', () => {
+
+    function isValidEmail(value) {
+      return /^[^\\s@]+@[^\\s@]+\\.(com|net)$/i.test(value.trim());
+    }
+
+    function showError(el, msg) {
+      clearError(el);
+      const error = document.createElement('span');
+      error.className = 'error-message';
+      error.textContent = msg;
+      el.insertAdjacentElement('afterend', error);
+      el.classList.add('invalid');
+    }
+
+    function clearError(el) {
+      el.classList.remove('invalid');
+      const next = el.nextElementSibling;
+      if (next && next.classList.contains('error-message')) next.remove();
+    }
+
+    function validateForm(form) {
+      let valid = true;
+
+      form.querySelectorAll('[required]').forEach(input => {
+        clearError(input);
+        const val = input.value || '';
+        if (!val.trim()) {
+          showError(input, 'This field is required');
+          valid = false;
+        } else if (input.type === 'email' && !isValidEmail(val)) {
+          showError(input, 'Please enter a valid email (must include @ and end with .com or .net)');
+          valid = false;
+        }
+      });
+
+      // Check radio buttons (for fitness form)
+      if (form.id === 'fitness-assessment-form') {
+        const radios = form.querySelectorAll('input[name="goal"]');
+        const anyChecked = Array.from(radios).some(r => r.checked);
+        const existing = form.querySelector('.error-message--radio');
+        if (existing) existing.remove();
+        if (!anyChecked) {
+          const err = document.createElement('span');
+          err.className = 'error-message error-message--radio';
+          err.textContent = 'Please select a goal';
+          radios[radios.length - 1].insertAdjacentElement('afterend', err);
+          valid = false;
+        }
+      }
+
+      return valid;
+    }
+
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
+
+        if (!validateForm(form)) return;
+
+        alert('✅ Form submitted successfully!');
+        form.reset();
+        form.querySelectorAll('.error-message').forEach(n => n.remove());
+        form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
+      });
+
+      form.addEventListener('input', e => {
+        if (e.target.matches('[required], input[type="email"], textarea')) clearError(e.target);
+        if (e.target.type === 'radio') {
+          form.querySelectorAll('.error-message--radio').forEach(n => n.remove());
+        }
+      });
+
+      form.addEventListener('reset', () => {
+        setTimeout(() => {
+          form.querySelectorAll('.error-message').forEach(n => n.remove());
+          form.querySelectorAll('.invalid').forEach(i => i.classList.remove('invalid'));
+        }, 0);
+      });
+    });
+
+    // Prevent any anchor (#) jumps
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (a && (a.getAttribute('href') === '#' || a.getAttribute('href') === '')) {
+        e.preventDefault();
+      }
     });
   });
-});
-</script>
+  </script>
 </body>
-
 </html>
+
 
 
 
