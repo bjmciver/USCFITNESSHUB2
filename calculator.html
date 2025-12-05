@@ -127,7 +127,7 @@
     </div> <!-- .calc-grid -->
   </div> <!-- .calc-container -->
 
-  <!-- Local CSS (safe + scoped) -->
+  <!-- Local CSS  -->
   <style>
     /* Scoped styles — won’t clash with other fragments */
     #calc-root .calc-container { max-width:960px; margin:0 auto; padding:0 12px; box-sizing:border-box; }
@@ -153,7 +153,7 @@
     @media (max-width:540px) { #calc-root .calc-img { height:160px; } #calc-root .form-actions { flex-direction:column; } #calc-root .form-actions .btn { width:100%; } }
   </style>
 
-  <!-- Scoped JS: robust to SPA insertion and repeated loads -->
+  <!-- SPA insertion and repeated loads -->
   <script>
     (function () {
       // guard to avoid double-binding when SPA inserts fragments multiple times
@@ -236,6 +236,7 @@
   </div>
 </body>
 </html>
+
 
 
 
