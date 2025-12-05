@@ -1,6 +1,6 @@
 /* ----------------------------
    USC Fitness Hub - Primary Styles
-   Cleaned, consolidated, and commented
+
    ---------------------------- */
 
 /* --- Base / Global --- */
@@ -540,6 +540,7 @@ textarea { min-height:110px; }
   #forms .form-actions { flex-direction: column; }
   #forms .form-actions button { width: 100%; }
 }
+
 
 
 
